@@ -5,7 +5,7 @@
 define ('DEVELOPMENT_ENVIRONMENT',true);
 
 
-define('DB_NAME', 'travel');
+define('DB_NAME', 'hotels');
 define('DB_USER', 'root');
 define('DB_PASSWORD', '1');
 define('DB_HOST', 'localhost');

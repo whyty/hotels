@@ -2,6 +2,9 @@
 
 class AdminController extends VanillaController {
 	
+	protected $_error;
+	protected $_username;
+	
 	function beforeAction () {
 		session_start();
 		$this->_user = new User();
@@ -9,9 +12,8 @@ class AdminController extends VanillaController {
 
 	function index($id = null) {
 		$this->isLoggedIn();
-		$this->_user->where(array('password' => $_SESSION['loggedIn']['success']));
-		$response = $this->_user->search();
-		$this->set('username', $response[0]['User']['name']);
+		$this->set('username', $this->_username);
+		$this->set('sectionName', 'Home');
 
 	}
 	
@@ -20,6 +22,27 @@ class AdminController extends VanillaController {
 		$this->set('error', $error);
 	}
 	
+	
+	function settings(){
+		$this->isLoggedIn();
+		$this->set('username', $this->_username);
+		$this->set('sectionName', 'Admin Settings');
+	}
+	
+	
+	function updateSettings(){
+		$this->_user->where(array('password' => $_SESSION['loggedIn']['success']));
+		$user = $this->_user->search();
+		$this->_user->id = $user[0]['User']['id'];
+		if(isset($_POST['name'])) $this->_user->name = $_POST['name'];
+		if(isset($_POST['password']) && !empty($_POST['password'])){
+			$this->_user->password = md5($_POST['password']);
+			$_SESSION['loggedIn']['success'] = md5($_POST['password']);
+		}
+		$this->_user->save();
+		
+		redirect('/admin/settings');
+	}
 	function signin(){
 		$_SESSION['loggedIn'] = array();
 		$this->_user->where(array("username" => $_POST['username'],"password" => md5($_POST['password'])));
@@ -38,7 +61,7 @@ class AdminController extends VanillaController {
 			$this->_user->where(array('password' => $_SESSION['loggedIn']['success']));
 			$data = $this->_user->search();
 			if($data){
-				return true;
+				$this->_username = $data[0]['User']['name'];
 			}else{
 				redirect("/admin/login");
 			}
