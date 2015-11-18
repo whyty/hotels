@@ -220,6 +220,13 @@ ul.alert-dropdown {
     color: #df8a13;
 }
 
+.nav .open>a,
+.nav .open>a:focus, 
+.nav .open>a:hover {
+    color: #fff;
+    background-color: #000;
+}
+
 /***************************** ADMIN Login Form *******************************************/
 .wrapper {    
 	margin-top: 80px;

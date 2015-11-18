@@ -30,14 +30,14 @@
 		<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
 		<div class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav side-nav">
-				<li>
+				<li <?php if($active == 'index'):?>class="active" <?php endif;?>>
 					<a href="/admin"><i class="fa fa-fw fa-dashboard"></i> Home</a>
 				</li>
 				<li>
 					<a href="javascript:void(0);" data-toggle="collapse" data-target="#hotels"><i class="fa fa-fw fa-bed"></i> Hotels</a>
-					<ul id="hotels" class="collapse">
-						<li>
-							<a href="#">Add hotel</a>
+					<ul id="hotels" class="dropdown <?php if($parentActive && $parentActive == 'hotels'):?>open<?php else:?>collapse<?php endif;?>">
+						<li <?php if($active == 'addHotel'):?>class="open" <?php endif;?>>
+							<a href="/admin/addHotel">Add hotel</a>
 						</li>
 						<li>
 							<a href="#">Hotel list</a>

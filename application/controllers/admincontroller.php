@@ -8,12 +8,14 @@ class AdminController extends VanillaController {
 	function beforeAction () {
 		session_start();
 		$this->_user = new User();
+		$this->set('parentActive','');
 	}
 
 	function index($id = null) {
 		$this->isLoggedIn();
 		$this->set('username', $this->_username);
 		$this->set('sectionName', 'Home');
+		$this->set('active', $this->_action);
 
 	}
 	
@@ -43,6 +45,24 @@ class AdminController extends VanillaController {
 		
 		redirect('/admin/settings');
 	}
+	
+	function addHotel(){
+		$this->isLoggedIn();
+		$this->set('username', $this->_username);
+		$this->set('sectionName', 'Hotel add');
+		$this->set('active', $this->_action);
+		$this->set('parentActive', 'hotels');
+	}
+	
+	function insertHotel(){
+		$hotel = new Hotel();
+		if(isset($_POST['name'])) $hotel->name = $_POST['name']; 
+		if(isset($_POST['stars'])) $hotel->stars = $_POST['stars']; 
+		if(isset($_POST['meal'])) $hotel->meal = $_POST['meal'];
+		$hotel->save();
+		$this->redirect("/admin/addHotel");
+	}
+	
 	function signin(){
 		$_SESSION['loggedIn'] = array();
 		$this->_user->where(array("username" => $_POST['username'],"password" => md5($_POST['password'])));
