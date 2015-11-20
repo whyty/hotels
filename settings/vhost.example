@@ -1,0 +1,28 @@
+<VirtualHost *:80>
+    ServerAdmin victor.albulescu@gmail.com
+    ServerName travel.via.dev
+    ServerAlias www.travel.via.dev
+    ServerAlias travel.via.dev
+    DocumentRoot /home/victor/projects/travel/
+
+    <Directory /home/victor/projects/travel/>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Allow from All
+    </Directory>
+
+	# Xdebug configuration begin
+        php_value zend_extension /usr/lib/php5/20090626+lfs/xdebug.so
+        php_value xdebug.profiler_enable_trigger "1"
+        php_value xdebug.remote_host 192.168.232.1
+        php_value xdebug.remote_enable 1
+        php_value xdebug.remote_autostart 1
+        php_value xdebug.remote_connect_back 1
+        php_value xdebug.remote_handler "dbgp"
+        php_value xdebug.idekey "netbeans-xdebug"
+        php_value xdebug.remote_log ${APACHE_LOG_DIR}/xdebug.log
+        php_value xdebug.remote_mode "req"
+        php_value xdebug.remote_port "9000"
+    # Xdebug configuration end
+
+</VirtualHost>

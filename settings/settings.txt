@@ -1,0 +1,1 @@
+Inafara de crearea unui vhost precum cel din settings/vhost.example, de asemenea trebuie setat basepath-ul din config/config.php alaturi de numele bazei de date s.a.m.d
