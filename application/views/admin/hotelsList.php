@@ -26,7 +26,7 @@
 				</td>
 				<td><?php echo $hotel['Hotel']['meal']?></td>
 				<td>
-					<a href="/admin/editHotel/<?php echo $hotel['Hotel']['id']?>" class="action"><i class="fa fa-pencil"></i></a>
+					<a href="/admin/addHotel/<?php echo $hotel['Hotel']['id']?>" class="action"><i class="fa fa-pencil"></i></a>
 					<a href="/admin/deleteHotel/<?php echo $hotel['Hotel']['id']?>" class="action"><i class="fa fa-trash-o"></i></a>
 				</td>
 			</tr>

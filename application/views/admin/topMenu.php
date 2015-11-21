@@ -37,7 +37,7 @@
 					<a href="javascript:void(0);" data-toggle="collapse" data-target="#hotels"><i class="fa fa-fw fa-bed"></i> Hotels</a>
 					<ul id="hotels" class="dropdown <?php if($parentActive && $parentActive == 'hotels'):?>open<?php else:?>collapse<?php endif;?>">
 						<li <?php if($active == 'addHotel'):?>class="open" <?php endif;?>>
-							<a href="/admin/addHotel">Add hotel</a>
+							<a href="/admin/addHotel">Add/Edit hotel</a>
 						</li>
 						<li <?php if($active == 'hotelsList'):?>class="open" <?php endif;?>>
 							<a href="/admin/hotelsList">Hotel list</a>

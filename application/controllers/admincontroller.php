@@ -48,10 +48,21 @@ class AdminController extends VanillaController {
 		redirect('/admin/settings');
 	}
 	
-	function addHotel(){
+	function addHotel($id=null){
 		$this->isLoggedIn();
 		$this->set('username', $this->_username);
-		$this->set('sectionName', 'Hotel add');
+		if($id){
+			$model = new Hotel();
+			$model->where(array('id' => $id));
+			$data = $model->search();
+			$hotel = $data[0]['Hotel'];
+			$sectionName = 'Hotel &raquo; ' . $data[0]['Hotel']['name'];
+		}else{
+			$sectionName = 'Hotel add';
+			$hotel = false;
+		}
+		$this->set('sectionName', $sectionName);
+		$this->set('hotel', $hotel);
 		$this->set('parentActive', 'hotels');
 	}
 	
@@ -105,16 +116,6 @@ class AdminController extends VanillaController {
 		$hotels = new Hotel();
 		$hotelList = $hotels->search();
 		$this->set('hotels', $hotelList);
-	}
-	
-	function editHotel($id){
-		$this->isLoggedIn();
-		$this->set('username', $this->_username);
-		$hotel = new Hotel();
-		$hotel->where(array('id' => $id));
-		$data = $hotel->search();
-		$this->set('sectionName', 'Hotel &raquo; ' . $data[0]['Hotel']['name']);
-		$this->set('hotel', $data[0]['Hotel']);
 	}
 	
 	function deleteHotel($id){
