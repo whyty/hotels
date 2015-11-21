@@ -44,6 +44,17 @@
 						</li>
 					</ul>
 				</li>
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#intervals"><i class="fa fa-clock-o"></i> Time Intervals</a>
+					<ul id="intervals" class="dropdown <?php if($parentActive && $parentActive == 'intervals'):?>open<?php else:?>collapse<?php endif;?>">
+						<li <?php if($active == 'addInterval'):?>class="open" <?php endif;?>>
+							<a href="/admin/addInterval">Add/Edit interval</a>
+						</li>
+						<li <?php if($active == 'intervalsList'):?>class="open" <?php endif;?>>
+							<a href="/admin/intervalsList">Intervals list</a>
+						</li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->

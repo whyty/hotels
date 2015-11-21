@@ -48,34 +48,6 @@ class AdminController extends VanillaController {
 		redirect('/admin/settings');
 	}
 	
-	function addHotel($id=null){
-		$this->isLoggedIn();
-		$this->set('username', $this->_username);
-		if($id){
-			$model = new Hotel();
-			$model->where(array('id' => $id));
-			$data = $model->search();
-			$hotel = $data[0]['Hotel'];
-			$sectionName = 'Hotel &raquo; ' . $data[0]['Hotel']['name'];
-		}else{
-			$sectionName = 'Hotel add';
-			$hotel = false;
-		}
-		$this->set('sectionName', $sectionName);
-		$this->set('hotel', $hotel);
-		$this->set('parentActive', 'hotels');
-	}
-	
-	function insertHotel(){
-		$hotel = new Hotel();
-		if(isset($_POST['id'])) $hotel->id = $_POST['id'];
-		if(isset($_POST['name'])) $hotel->name = $_POST['name']; 
-		if(isset($_POST['stars'])) $hotel->stars = $_POST['stars']; 
-		if(isset($_POST['meal'])) $hotel->meal = $_POST['meal'];
-		$hotel->save();
-		redirect("/admin/hotelsList");
-	}
-	
 	function signin(){
 		$_SESSION['loggedIn'] = array();
 		$this->_user->where(array("username" => $_POST['username'],"password" => md5($_POST['password'])));
@@ -108,6 +80,35 @@ class AdminController extends VanillaController {
 		redirect("/admin/login");
 	}
 	
+	function addHotel($id=null){
+		$this->isLoggedIn();
+		$this->set('username', $this->_username);
+		if($id){
+			$model = new Hotel();
+			$model->where(array('id' => $id));
+			$data = $model->search();
+			$hotel = $data[0]['Hotel'];
+			$sectionName = 'Hotel &raquo; ' . $data[0]['Hotel']['name'];
+		}else{
+			$sectionName = 'Hotel add';
+			$hotel = false;
+		}
+		$this->set('sectionName', $sectionName);
+		$this->set('hotel', $hotel);
+		$this->set('parentActive', 'hotels');
+	}
+	
+	function insertHotel(){
+		$this->isLoggedIn();
+		$hotel = new Hotel();
+		if(isset($_POST['id']) && $_POST['id']!='') $hotel->id = $_POST['id'];
+		if(isset($_POST['name'])) $hotel->name = $_POST['name']; 
+		if(isset($_POST['stars'])) $hotel->stars = $_POST['stars']; 
+		if(isset($_POST['meal'])) $hotel->meal = $_POST['meal'];
+		$hotel->save();
+		redirect("/admin/hotelsList");
+	}
+	
 	function hotelsList(){
 		$this->isLoggedIn();
 		$this->set('username', $this->_username);
@@ -119,12 +120,61 @@ class AdminController extends VanillaController {
 	}
 	
 	function deleteHotel($id){
+		$this->isLoggedIn();
 		$hotel = new Hotel();
 		$hotel->id = $id;
 		$hotel->delete();
 		redirect('/admin/hotelsList');
 	}
 	
+	function addInterval($id=null){
+		$this->isLoggedIn();
+		$this->set('username', $this->_username);
+		if($id){
+			$model = new Interval();
+			$model->where(array('id' => $id));
+			$data = $model->search();
+			$interval = $data[0]['Interval'];
+			$sectionName = 'Interval &raquo; ' . $data[0]['Interval']['name'];
+		}else{
+			$sectionName = 'Interval add';
+			$interval = false;
+		}
+		$this->set('sectionName', $sectionName);
+		$this->set('interval', $interval);
+		$this->set('parentActive', 'intervals');
+	}
+	
+	function insertInterval(){
+		$this->isLoggedIn();
+		$interval = new Interval();
+		if(isset($_POST['id']) && $_POST['id']!='') $interval->id = $_POST['id'];
+		if(isset($_POST['from_date']))$interval->from_date = $_POST['from_date']; 
+		if(isset($_POST['to_date'])) $interval->to_date = $_POST['to_date']; 
+		if(isset($_POST['price_double'])) $interval->price_double = $_POST['price_double'];
+		if(isset($_POST['price_triple'])) $interval->price_triple = $_POST['price_triple'];
+		if(isset($_POST['price_plus_ron'])) $interval->price_plus_ron = $_POST['price_plus_ron'];
+		$interval->save();
+		redirect("/admin/intervalsList");
+	}
+	
+	function intervalsList(){
+		$this->isLoggedIn();
+		$this->set('username', $this->_username);
+		$this->set('sectionName', 'Time Intervals List');
+		$this->set('parentActive', 'intervalss');
+		$intervals = new Interval();
+		$intervalList = $intervals->search();
+		$this->set('intervals', $intervalList);
+	}
+	
+	function deleteInterval($id){
+		$this->isLoggedIn();
+		$interval = new Interval();
+		$interval->id = $id;
+		$interval->delete();
+		redirect('/admin/intervalsList');
+	}
 	function afterAction() {
 
 	}
