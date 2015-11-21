@@ -39,8 +39,8 @@
 						<li <?php if($active == 'addHotel'):?>class="open" <?php endif;?>>
 							<a href="/admin/addHotel">Add hotel</a>
 						</li>
-						<li>
-							<a href="#">Hotel list</a>
+						<li <?php if($active == 'hotelsList'):?>class="open" <?php endif;?>>
+							<a href="/admin/hotelsList">Hotel list</a>
 						</li>
 					</ul>
 				</li>

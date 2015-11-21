@@ -9,13 +9,15 @@ class AdminController extends VanillaController {
 		session_start();
 		$this->_user = new User();
 		$this->set('parentActive','');
+		$this->set('active', $this->_action);
+		$this->set('sectionName', '');
 	}
 
 	function index($id = null) {
 		$this->isLoggedIn();
 		$this->set('username', $this->_username);
 		$this->set('sectionName', 'Home');
-		$this->set('active', $this->_action);
+		
 
 	}
 	
@@ -50,17 +52,17 @@ class AdminController extends VanillaController {
 		$this->isLoggedIn();
 		$this->set('username', $this->_username);
 		$this->set('sectionName', 'Hotel add');
-		$this->set('active', $this->_action);
 		$this->set('parentActive', 'hotels');
 	}
 	
 	function insertHotel(){
 		$hotel = new Hotel();
+		if(isset($_POST['id'])) $hotel->id = $_POST['id'];
 		if(isset($_POST['name'])) $hotel->name = $_POST['name']; 
 		if(isset($_POST['stars'])) $hotel->stars = $_POST['stars']; 
 		if(isset($_POST['meal'])) $hotel->meal = $_POST['meal'];
 		$hotel->save();
-		$this->redirect("/admin/addHotel");
+		redirect("/admin/hotelsList");
 	}
 	
 	function signin(){
@@ -93,6 +95,33 @@ class AdminController extends VanillaController {
 	function logout() {
 		unset($_SESSION['loggedIn']);
 		redirect("/admin/login");
+	}
+	
+	function hotelsList(){
+		$this->isLoggedIn();
+		$this->set('username', $this->_username);
+		$this->set('sectionName', 'Hotels List');
+		$this->set('parentActive', 'hotels');
+		$hotels = new Hotel();
+		$hotelList = $hotels->search();
+		$this->set('hotels', $hotelList);
+	}
+	
+	function editHotel($id){
+		$this->isLoggedIn();
+		$this->set('username', $this->_username);
+		$hotel = new Hotel();
+		$hotel->where(array('id' => $id));
+		$data = $hotel->search();
+		$this->set('sectionName', 'Hotel &raquo; ' . $data[0]['Hotel']['name']);
+		$this->set('hotel', $data[0]['Hotel']);
+	}
+	
+	function deleteHotel($id){
+		$hotel = new Hotel();
+		$hotel->id = $id;
+		$hotel->delete();
+		redirect('/admin/hotelsList');
 	}
 	
 	function afterAction() {

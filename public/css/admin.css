@@ -281,3 +281,14 @@ input[type="password"] {
 	margin: 5px 0 5px 5px;
 	padding: 5px 0;
 }
+
+a.action {
+	padding: 0 3px;
+}
+.star-colored {
+	color: #f0ad4e;
+}
+.table-custom {
+	border: solid 1px #ddd;
+	
+}
