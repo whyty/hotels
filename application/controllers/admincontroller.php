@@ -4,10 +4,16 @@ class AdminController extends VanillaController {
 	
 	protected $_error;
 	protected $_username;
+	protected $_hotel;
+	protected $_interval;
+	protected $_hotel_interval;
 	
 	function beforeAction () {
 		session_start();
 		$this->_user = new User();
+		$this->_hotel = new Hotel();
+		$this->_hotel_interval = new Hotel_Interval();
+		$this->_interval = new Interval();
 		$this->set('parentActive','');
 		$this->set('active', $this->_action);
 		$this->set('sectionName', '');
@@ -83,29 +89,54 @@ class AdminController extends VanillaController {
 	function addHotel($id=null){
 		$this->isLoggedIn();
 		$this->set('username', $this->_username);
+		$period = array();
 		if($id){
-			$model = new Hotel();
-			$model->where(array('id' => $id));
-			$data = $model->search();
+			$this->_hotel->where(array('id' => $id));
+			$data = $this->_hotel->search();
 			$hotel = $data[0]['Hotel'];
+			$this->_hotel_interval->where(array('hotel_id' =>  $id));
+			$datesSelected = $this->_hotel_interval->search();
+			foreach($datesSelected as $date){
+				array_push($period, $date['Hotel_Interval']['interval_id']);
+			}
 			$sectionName = 'Hotel &raquo; ' . $data[0]['Hotel']['name'];
 		}else{
 			$sectionName = 'Hotel add';
 			$hotel = false;
 		}
+		
+		$intervals = $this->_interval->search();
 		$this->set('sectionName', $sectionName);
 		$this->set('hotel', $hotel);
+		$this->set('intervals', $intervals);
+		$this->set('period', $period);
 		$this->set('parentActive', 'hotels');
 	}
 	
 	function insertHotel(){
 		$this->isLoggedIn();
-		$hotel = new Hotel();
-		if(isset($_POST['id']) && $_POST['id']!='') $hotel->id = $_POST['id'];
-		if(isset($_POST['name'])) $hotel->name = $_POST['name']; 
-		if(isset($_POST['stars'])) $hotel->stars = $_POST['stars']; 
-		if(isset($_POST['meal'])) $hotel->meal = $_POST['meal'];
-		$hotel->save();
+		if(isset($_POST['id']) && $_POST['id']!='') $this->_hotel->id = $_POST['id'];
+		if(isset($_POST['name'])) $this->_hotel->name = $_POST['name']; 
+		if(isset($_POST['stars'])) $this->_hotel->stars = $_POST['stars']; 
+		if(isset($_POST['meal'])) $this->_hotel->meal = $_POST['meal'];
+		$this->_hotel->save();
+		$this->_hotel->orderby('id','DESC');
+		$hotelData = $this->_hotel->search();
+		$id = (count($hotelData)  > 0) ? (int)$hotelData[0]['Hotel']['id'] : $_POST['id'];
+		if(isset($_POST['intervals'])){
+			foreach($_POST['intervals'] as $date){
+				$this->_hotel_interval->where(array('hotel_id'=>$id, 'interval_id' => $date));
+				$period = $this->_hotel_interval->search();
+				if($period){
+					continue;
+				}else{
+					$this->_hotel_interval->hotel_id = $id;
+					$this->_hotel_interval->interval_id = $date;
+					$this->_hotel_interval->save();
+					
+				}
+			}
+		}
 		redirect("/admin/hotelsList");
 	}
 	
@@ -114,16 +145,22 @@ class AdminController extends VanillaController {
 		$this->set('username', $this->_username);
 		$this->set('sectionName', 'Hotels List');
 		$this->set('parentActive', 'hotels');
-		$hotels = new Hotel();
-		$hotelList = $hotels->search();
+		$hotelList = $this->_hotel->search();
 		$this->set('hotels', $hotelList);
 	}
 	
 	function deleteHotel($id){
 		$this->isLoggedIn();
-		$hotel = new Hotel();
-		$hotel->id = $id;
-		$hotel->delete();
+		$this->_hotel_interval->where(array('hotel_id' => $id));
+		$data = $this->_hotel_interval->search();
+		if(count($data) > 0){
+			foreach($data as $d){
+				$this->_hotel_interval->id = $d['Hotel_Interval']['id'];
+				$this->_hotel_interval->delete();
+			}
+		}
+		$this->_hotel->id = $id;
+		$this->_hotel->delete();
 		redirect('/admin/hotelsList');
 	}
 	
@@ -131,9 +168,8 @@ class AdminController extends VanillaController {
 		$this->isLoggedIn();
 		$this->set('username', $this->_username);
 		if($id){
-			$model = new Interval();
-			$model->where(array('id' => $id));
-			$data = $model->search();
+			$this->_interval->where(array('id' => $id));
+			$data = $this->_interval->search();
 			$interval = $data[0]['Interval'];
 			$sectionName = 'Interval &raquo; ' . $data[0]['Interval']['name'];
 		}else{
@@ -147,14 +183,13 @@ class AdminController extends VanillaController {
 	
 	function insertInterval(){
 		$this->isLoggedIn();
-		$interval = new Interval();
-		if(isset($_POST['id']) && $_POST['id']!='') $interval->id = $_POST['id'];
-		if(isset($_POST['from_date']))$interval->from_date = $_POST['from_date']; 
-		if(isset($_POST['to_date'])) $interval->to_date = $_POST['to_date']; 
-		if(isset($_POST['price_double'])) $interval->price_double = $_POST['price_double'];
-		if(isset($_POST['price_triple'])) $interval->price_triple = $_POST['price_triple'];
-		if(isset($_POST['price_plus_ron'])) $interval->price_plus_ron = $_POST['price_plus_ron'];
-		$interval->save();
+		if(isset($_POST['id']) && $_POST['id']!='') $this->_interval->id = $_POST['id'];
+		if(isset($_POST['from_date']))$this->_interval->from_date = $_POST['from_date']; 
+		if(isset($_POST['to_date'])) $this->_interval->to_date = $_POST['to_date']; 
+		if(isset($_POST['price_double'])) $this->_interval->price_double = $_POST['price_double'];
+		if(isset($_POST['price_triple'])) $this->_interval->price_triple = $_POST['price_triple'];
+		if(isset($_POST['price_plus_ron'])) $this->_interval->price_plus_ron = $_POST['price_plus_ron'];
+		$this->_interval->save();
 		redirect("/admin/intervalsList");
 	}
 	
@@ -162,17 +197,23 @@ class AdminController extends VanillaController {
 		$this->isLoggedIn();
 		$this->set('username', $this->_username);
 		$this->set('sectionName', 'Time Intervals List');
-		$this->set('parentActive', 'intervalss');
-		$intervals = new Interval();
-		$intervalList = $intervals->search();
+		$this->set('parentActive', 'intervals');
+		$intervalList = $this->_interval->search();
 		$this->set('intervals', $intervalList);
 	}
 	
 	function deleteInterval($id){
 		$this->isLoggedIn();
-		$interval = new Interval();
-		$interval->id = $id;
-		$interval->delete();
+		$this->_hotel_interval->where(array('interval_id' => $id));
+		$data = $this->_hotel_interval->search();
+		if($data){
+			foreach($data as $d){
+				$this->_hotel_interval->id = $d['Hotel_Interval']['id'];
+				$this->_hotel_interval->delete();
+			}
+		}
+		$this->_interval->id = $id;
+		$this->_interval->delete();
 		redirect('/admin/intervalsList');
 	}
 	function afterAction() {
