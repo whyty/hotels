@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 18, 2015 at 09:57 PM
+-- Generation Time: Nov 25, 2015 at 06:54 PM
 -- Server version: 5.5.35
 -- PHP Version: 5.3.10-1ubuntu3.10
 
@@ -19,6 +19,30 @@ SET time_zone = "+00:00";
 --
 -- Database: `hotels`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `airports`
+--
+
+CREATE TABLE IF NOT EXISTS `airports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `clasifications`
+--
+
+CREATE TABLE IF NOT EXISTS `clasifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -2417,16 +2441,86 @@ CREATE TABLE IF NOT EXISTS `hotels` (
   `name` varchar(255) NOT NULL,
   `stars` int(11) NOT NULL,
   `meal` varchar(255) NOT NULL,
-  `period` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `hotels`
 --
 
-INSERT INTO `hotels` (`id`, `name`, `stars`, `meal`, `period`) VALUES
-(1, 'SDADSAS', 34, 'sfsdgs', 0);
+INSERT INTO `hotels` (`id`, `name`, `stars`, `meal`) VALUES
+(1, 'Belvedere', 3, 'mic dejun'),
+(2, 'Oceania', 4, 'nu'),
+(3, 'trakaka', 4, 'mic dejun inclus');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hotel_intervals`
+--
+
+CREATE TABLE IF NOT EXISTS `hotel_intervals` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `hotel_id` int(11) NOT NULL,
+  `interval_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+
+--
+-- Dumping data for table `hotel_intervals`
+--
+
+INSERT INTO `hotel_intervals` (`id`, `hotel_id`, `interval_id`) VALUES
+(14, 3, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `intervals`
+--
+
+CREATE TABLE IF NOT EXISTS `intervals` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from_date` date NOT NULL,
+  `to_date` date NOT NULL,
+  `price_double` int(11) NOT NULL,
+  `price_triple` int(11) NOT NULL,
+  `price_plus_ron` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `intervals`
+--
+
+INSERT INTO `intervals` (`id`, `from_date`, `to_date`, `price_double`, `price_triple`, `price_plus_ron`) VALUES
+(4, '2015-11-27', '2015-11-30', 123, 234, 12),
+(5, '2015-11-01', '2015-11-10', 11, 22, 12);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `photos`
+--
+
+CREATE TABLE IF NOT EXISTS `photos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `path` varchar(255) NOT NULL,
+  `file` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `themes`
+--
+
+CREATE TABLE IF NOT EXISTS `themes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
