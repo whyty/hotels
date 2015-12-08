@@ -1,10 +1,9 @@
-				</div>
-				<!-- /.container-fluid -->
+<!-- jQuery Version 1.11.1 -->
+    <script src="js/jquery.js"></script>
 
-			</div>
-			<!-- /#page-wrapper -->
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
 
-		</div>
-		<!-- /#wrapper -->
-	</body>
+</body>
+
 </html>
