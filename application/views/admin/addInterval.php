@@ -2,18 +2,18 @@
 <div class="col-lg-6">
 	<form role="form" action="/admin/insertInterval" method="post">
 		<input type="hidden" name="id" value="<?php echo isset($interval) ? $interval['id'] : '' ?>" />
-		<div class="form-group input-group" id="from_date">
+		<div class="form-group input-group">
 			<span class="input-group-addon">From date:</span>
-			<input type="text" class="form-control" placeholder="From date" value="<?php echo isset($interval) ? $interval['from_date'] : '' ?>" name="from_date" required>
-			<span class="input-group-addon">
+			<input type="text" class="form-control"  id="from_date" placeholder="From date" value="<?php echo isset($interval) ? $interval['from_date'] : '' ?>" name="from_date" required>
+			<span class="input-group-addon" from-date>
 				<span class="glyphicon glyphicon-calendar"></span>
 			</span>
 		</div>
 
-		<div class="form-group input-group" id="to_date">
+		<div class="form-group input-group">
 			<span class="input-group-addon">To date</span>
-			<input type="text" class="form-control" placeholder="To date" value="<?php echo isset($interval) ? $interval['to_date'] : '' ?>" name="to_date" required>
-			<span class="input-group-addon">
+			<input type="text" class="form-control" id="to_date" placeholder="To date" value="<?php echo isset($interval) ? $interval['to_date'] : '' ?>" name="to_date" required>
+			<span class="input-group-addon" to-date>
 				<span class="glyphicon glyphicon-calendar"></span>
 			</span>
 		</div>

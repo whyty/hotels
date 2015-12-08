@@ -1,5 +1,28 @@
+var Travel = {
+	confirmDelete: function(e){
+		e.preventDefault();
+		var url = $(e.currentTarget).attr('href');
+		if(confirm("This item will be deleted. Do you want to do this?") == true){
+			window.location.href = url;
+		}
+		return false;
+	},
+	adminSave: function(e){
+		e.preventDefault();
+		if(confirm("Do you want to save this?") == true){
+			$('[role="form"]').submit();
+		}
+		return false;
+	}
+}
+
 $(document).ready(function () {
-	
+		$('[from-date]').click(function(){
+			$('#from_date').data("DateTimePicker").toggle();
+		});
+		$('[to-date]').click(function(){
+			$('#to_date').data("DateTimePicker").toggle();
+		});
 		$('#from_date').datetimepicker({format: 'YYYY-MM-DD'});
         $('#to_date').datetimepicker({
 			format: 'YYYY-MM-DD',

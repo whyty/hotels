@@ -21,7 +21,7 @@
 			<select id="intervals" class="form-control" name="intervals[]" multiple>
 				<option>Select interval</option>
 				<?php foreach($intervals as $interval): ?>
-					<option value="<?php echo $interval['Interval']['id'];?>" <?php echo in_array($interval['Interval']['id'], $period) ? "selected='selected'" : '';?>><?php echo $interval['Interval']['from_date'] . " -> " . $interval['Interval']['to_date']?></option>
+					<option value="<?php echo $interval['id'];?>" <?php echo in_array($interval['id'], $period) ? "selected='selected'" : '';?>><?php echo $interval['from_date'] . " -> " . $interval['to_date']?></option>
 				<?php endforeach; ?>
 			</select>
 		</div>

@@ -43,7 +43,7 @@ class AdminController extends VanillaController {
 	function updateSettings(){
 		$this->_user->where(array('password' => $_SESSION['loggedIn']['success']));
 		$user = $this->_user->search();
-		$this->_user->id = $user[0]['User']['id'];
+		$this->_user->id = $user[0]['id'];
 		if(isset($_POST['name'])) $this->_user->name = $_POST['name'];
 		if(isset($_POST['password']) && !empty($_POST['password'])){
 			$this->_user->password = md5($_POST['password']);
@@ -59,7 +59,7 @@ class AdminController extends VanillaController {
 		$this->_user->where(array("username" => $_POST['username'],"password" => md5($_POST['password'])));
 		if ($this->_user->search()){
 			$data = $this->_user->search();
-			$_SESSION['loggedIn']['success'] = $data[0]['User']['password'];
+			$_SESSION['loggedIn']['success'] = $data[0]['password'];
 			redirect("/admin");
 		 }else{
 			$_SESSION['loggedIn']['error'] = 'Username / password wrong';
@@ -72,7 +72,7 @@ class AdminController extends VanillaController {
 			$this->_user->where(array('password' => $_SESSION['loggedIn']['success']));
 			$data = $this->_user->search();
 			if($data){
-				$this->_username = $data[0]['User']['name'];
+				$this->_username = $data[0]['name'];
 			}else{
 				redirect("/admin/login");
 			}
@@ -93,13 +93,13 @@ class AdminController extends VanillaController {
 		if($id){
 			$this->_hotel->where(array('id' => $id));
 			$data = $this->_hotel->search();
-			$hotel = $data[0]['Hotel'];
+			$hotel = $data[0];
 			$this->_hotel_interval->where(array('hotel_id' =>  $id));
 			$datesSelected = $this->_hotel_interval->search();
 			foreach($datesSelected as $date){
-				array_push($period, $date['Hotel_Interval']['interval_id']);
+				array_push($period, $date['interval_id']);
 			}
-			$sectionName = 'Hotel &raquo; ' . $data[0]['Hotel']['name'];
+			$sectionName = 'Hotel &raquo; ' . $hotel['name'];
 		}else{
 			$sectionName = 'Hotel add';
 			$hotel = false;
@@ -122,18 +122,34 @@ class AdminController extends VanillaController {
 		$this->_hotel->save();
 		$this->_hotel->orderby('id','DESC');
 		$hotelData = $this->_hotel->search();
-		$id = (count($hotelData)  > 0) ? (int)$hotelData[0]['Hotel']['id'] : $_POST['id'];
+		$id = (count($hotelData)  > 0) ? (int)$hotelData[0]['id'] : $_POST['id'];
 		if(isset($_POST['intervals'])){
+			$this->_hotel_interval->where(array('hotel_id'=>$id));
+			$data = $this->_hotel_interval->search();
+			$period = array();
+			foreach ($data as $d){
+				array_push($period, $d['interval_id']);
+			}
+			$diff = array_diff($period, $_POST['intervals']);
 			foreach($_POST['intervals'] as $date){
-				$this->_hotel_interval->where(array('hotel_id'=>$id, 'interval_id' => $date));
-				$period = $this->_hotel_interval->search();
-				if($period){
-					continue;
+				if($data){
+					if(!in_array($date, $diff) && !in_array($date,$period)){
+						$this->_hotel_interval->hotel_id = $id;
+						$this->_hotel_interval->interval_id = $date;
+						$this->_hotel_interval->save();
+					}
 				}else{
 					$this->_hotel_interval->hotel_id = $id;
 					$this->_hotel_interval->interval_id = $date;
 					$this->_hotel_interval->save();
-					
+				}
+			}
+			if($data){
+				foreach ($data as $d){
+					if(in_array($d['interval_id'], $diff)){
+						$this->_hotel_interval->id = $d['id'];
+						$this->_hotel_interval->delete();
+					}
 				}
 			}
 		}
@@ -155,7 +171,7 @@ class AdminController extends VanillaController {
 		$data = $this->_hotel_interval->search();
 		if(count($data) > 0){
 			foreach($data as $d){
-				$this->_hotel_interval->id = $d['Hotel_Interval']['id'];
+				$this->_hotel_interval->id = $d['id'];
 				$this->_hotel_interval->delete();
 			}
 		}
@@ -170,8 +186,8 @@ class AdminController extends VanillaController {
 		if($id){
 			$this->_interval->where(array('id' => $id));
 			$data = $this->_interval->search();
-			$interval = $data[0]['Interval'];
-			$sectionName = 'Interval &raquo; ' . $data[0]['Interval']['name'];
+			$interval = $data[0];
+			$sectionName = 'Interval &raquo; ' . $data[0]['name'];
 		}else{
 			$sectionName = 'Interval add';
 			$interval = false;
@@ -208,7 +224,7 @@ class AdminController extends VanillaController {
 		$data = $this->_hotel_interval->search();
 		if($data){
 			foreach($data as $d){
-				$this->_hotel_interval->id = $d['Hotel_Interval']['id'];
+				$this->_hotel_interval->id = $d['id'];
 				$this->_hotel_interval->delete();
 			}
 		}

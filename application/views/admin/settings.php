@@ -12,6 +12,6 @@
 			<span class="input-group-addon">Password</span>
 			<input type="password" class="form-control" placeholder="Admin Password" name="password">
 		</div>
-		<button type="submit" class="btn btn-primary pull-right">Save settings</button>
+		<button type="submit" class="btn btn-primary pull-right" onclick="Travel.adminSave(event)">Save settings</button>
 	</form>
 </div>

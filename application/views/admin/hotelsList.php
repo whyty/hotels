@@ -16,18 +16,18 @@
 				<th scope="row">
 					<input type="checkbox" value="1" name="selecHotel" />
 				</th>
-				<td><?php echo $hotel['Hotel']['name'] ?></td>
+				<td><?php echo $hotel['name'] ?></td>
 				<td>
-					<?php if($hotel['Hotel']['stars'] > 0) :?>
-						<?php for($i = 0; $i < $hotel['Hotel']['stars']; $i++):?>
+					<?php if($hotel['stars'] > 0) :?>
+						<?php for($i = 0; $i < $hotel['stars']; $i++):?>
 							<i class="fa fa-star star-colored"></i>
 						<?php endfor;?>
 					<?php endif;?>
 				</td>
-				<td><?php echo $hotel['Hotel']['meal']?></td>
+				<td><?php echo $hotel['meal']?></td>
 				<td>
-					<a href="/admin/addHotel/<?php echo $hotel['Hotel']['id']?>" class="action"><i class="fa fa-pencil"></i></a>
-					<a href="/admin/deleteHotel/<?php echo $hotel['Hotel']['id']?>" class="action"><i class="fa fa-trash-o"></i></a>
+					<a href="/admin/addHotel/<?php echo $hotel['id']?>" class="action"><i class="fa fa-pencil"></i></a>
+					<a href="/admin/deleteHotel/<?php echo $hotel['id']?>" onclick="Travel.confirmDelete(event)" class="action"><i class="fa fa-trash-o"></i></a>
 				</td>
 			</tr>
 			<?php endforeach;?>

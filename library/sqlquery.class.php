@@ -237,7 +237,13 @@ class SQLQuery {
 
 				array_push($result,$tempResults);
 			}
-
+			$finalResponse = array();
+			if($result){
+				foreach($result as $r){
+					$finalResponse[] = $r[$table[0]];
+				}
+				$result = $finalResponse;
+			}
 			if (mysql_num_rows($this->_result) == 1 && $this->id != null) {
 				mysql_free_result($this->_result);
 				$this->clear();
