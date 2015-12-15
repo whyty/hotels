@@ -55,6 +55,28 @@
 						</li>
 					</ul>
 				</li>
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#airports"><i class="fa fa-plane"></i> Airports</a>
+					<ul id="airports" class="dropdown <?php if($parentActive && $parentActive == 'airports'):?>open<?php else:?>collapse<?php endif;?>">
+						<li <?php if($active == 'addAirport'):?>class="open" <?php endif;?>>
+							<a href="/admin/addAirport">Add/Edit airport</a>
+						</li>
+						<li <?php if($active == 'airportsList'):?>class="open" <?php endif;?>>
+							<a href="/admin/airportsList">Airports list</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#classifications"><i class="fa fa-clipboard"></i> Classifications</a>
+					<ul id="classifications" class="dropdown <?php if($parentActive && $parentActive == 'classifications'):?>open<?php else:?>collapse<?php endif;?>">
+						<li <?php if($active == 'addClassification'):?>class="open" <?php endif;?>>
+							<a href="/admin/addClassification">Add/Edit classification</a>
+						</li>
+						<li <?php if($active == 'classificationsList'):?>class="open" <?php endif;?>>
+							<a href="/admin/classificationsList">Classifications list</a>
+						</li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->

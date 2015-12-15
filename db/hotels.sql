@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 25, 2015 at 06:54 PM
+-- Generation Time: Dec 15, 2015 at 08:56 AM
 -- Server version: 5.5.35
 -- PHP Version: 5.3.10-1ubuntu3.10
 
@@ -30,19 +30,19 @@ CREATE TABLE IF NOT EXISTS `airports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `clasifications`
+-- Table structure for table `classifications`
 --
 
-CREATE TABLE IF NOT EXISTS `clasifications` (
+CREATE TABLE IF NOT EXISTS `classifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -2442,16 +2442,14 @@ CREATE TABLE IF NOT EXISTS `hotels` (
   `stars` int(11) NOT NULL,
   `meal` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `hotels`
 --
 
 INSERT INTO `hotels` (`id`, `name`, `stars`, `meal`) VALUES
-(1, 'Belvedere', 3, 'mic dejun'),
-(2, 'Oceania', 4, 'nu'),
-(3, 'trakaka', 4, 'mic dejun inclus');
+(2, 'new Hotel', 6, '-');
 
 -- --------------------------------------------------------
 
@@ -2464,14 +2462,15 @@ CREATE TABLE IF NOT EXISTS `hotel_intervals` (
   `hotel_id` int(11) NOT NULL,
   `interval_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=47 ;
 
 --
 -- Dumping data for table `hotel_intervals`
 --
 
 INSERT INTO `hotel_intervals` (`id`, `hotel_id`, `interval_id`) VALUES
-(14, 3, 4);
+(45, 2, 5),
+(46, 2, 4);
 
 -- --------------------------------------------------------
 
@@ -2495,7 +2494,8 @@ CREATE TABLE IF NOT EXISTS `intervals` (
 
 INSERT INTO `intervals` (`id`, `from_date`, `to_date`, `price_double`, `price_triple`, `price_plus_ron`) VALUES
 (4, '2015-11-27', '2015-11-30', 123, 234, 12),
-(5, '2015-11-01', '2015-11-10', 11, 22, 12);
+(5, '2015-11-01', '2015-11-10', 11, 22, 12),
+(6, '0000-00-00', '0000-00-00', 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -2542,7 +2542,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `username`, `password`) VALUES
-(1, 'Admin test', 'admin', '0192023a7bbd73250516f069df18b500');
+(1, 'Admin test 2', 'admin', '0192023a7bbd73250516f069df18b500');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

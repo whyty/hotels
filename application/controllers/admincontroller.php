@@ -7,6 +7,8 @@ class AdminController extends VanillaController {
 	protected $_hotel;
 	protected $_interval;
 	protected $_hotel_interval;
+	protected $_airport;
+	protected $_classification;
 	
 	function beforeAction () {
 		session_start();
@@ -14,6 +16,8 @@ class AdminController extends VanillaController {
 		$this->_hotel = new Hotel();
 		$this->_hotel_interval = new Hotel_Interval();
 		$this->_interval = new Interval();
+		$this->_airport = new Airport();
+		$this->_classification = new Classification();
 		$this->set('parentActive','');
 		$this->set('active', $this->_action);
 		$this->set('sectionName', '');
@@ -232,6 +236,96 @@ class AdminController extends VanillaController {
 		$this->_interval->delete();
 		redirect('/admin/intervalsList');
 	}
+	
+	function addAirport($id=null){
+		$this->isLoggedIn();
+		if($id){
+			$this->_airport->where(array('id' => $id));
+			$data = $this->_airport->search();
+			$airport = $data[0];
+			$sectionName = 'Airport &raquo; ' . $data[0]['name'];
+		}else{
+			$sectionName = 'Airport add';
+			$airport = false;
+		}
+		$this->set('username', $this->_username);
+		$this->set('parentActive', 'airports');
+		$this->set('sectionName', $sectionName);
+		$this->set('airport', $airport);
+	}
+	
+	function insertAirport(){
+		$this->isLoggedIn();
+		if(isset($_POST['id']) && $_POST['id']!='') $this->_airport->id = $_POST['id'];
+		if(isset($_POST['name'])) $this->_airport->name = $_POST['name'];
+		$this->_airport->save();
+		redirect("/admin/airportsList");
+	}
+	
+	function airportsList(){
+		$this->isLoggedIn();
+		$this->set('username', $this->_username);
+		$this->set('sectionName', 'Airports List');
+		$this->set('parentActive', 'airports');
+		$airportsList = $this->_airport->search();
+		$this->set('airports', $airportsList);
+	}
+	
+	function deleteAirport($id){
+		$this->isLoggedIn();
+		$this->_airport->where(array('id' => $id));
+		$data = $this->_airport->search();
+		if($data){
+			$this->_airport->id = $id;
+			$this->_airport->delete();
+		}
+		redirect('/admin/airportsList');
+	}
+	
+	function addClassification($id=null){
+		$this->isLoggedIn();
+		if($id){
+			$this->_classification->where(array('id' => $id));
+			$data = $this->_classification->search();
+			$clasif = $data[0];
+			$sectionName = 'Classification &raquo; ' . $data[0]['name'];
+		}else{
+			$sectionName = 'Classification add';
+			$clasif = false;
+		}
+		$this->set('username', $this->_username);
+		$this->set('parentActive', 'classifications');
+		$this->set('sectionName', $sectionName);
+		$this->set('clasif', $clasif);
+	}
+	
+	function insertClassification(){
+		$this->isLoggedIn();
+		if(isset($_POST['id']) && $_POST['id']!='') $this->_classification->id = $_POST['id'];
+		if(isset($_POST['name'])) $this->_classification->name = $_POST['name'];
+		$this->_classification->save();
+		redirect("/admin/classificationsList");
+	}
+	
+	function classificationsList(){
+		$this->isLoggedIn();
+		$this->set('username', $this->_username);
+		$this->set('sectionName', 'Classifications List');
+		$this->set('parentActive', 'classifications');
+		$classificationsList = $this->_classification->search();
+		$this->set('classifications', $classificationsList);
+	}
+	function deleteClassification($id){
+		$this->isLoggedIn();
+		$this->_classification->where(array('id' => $id));
+		$data = $this->_classification->search();
+		if($data){
+			$this->_classification->id = $id;
+			$this->_classification->delete();
+		}
+		redirect('/admin/classificationsList');
+	}
+	
 	function afterAction() {
 
 	}
