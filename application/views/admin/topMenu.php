@@ -77,6 +77,17 @@
 						</li>
 					</ul>
 				</li>
+				<li>
+					<a href="javascript:void(0);" data-toggle="collapse" data-target="#themes"><i class="fa fa-bookmark"></i> Themes</a>
+					<ul id="themes" class="dropdown <?php if($parentActive && $parentActive == 'themes'):?>open<?php else:?>collapse<?php endif;?>">
+						<li <?php if($active == 'addTheme'):?>class="open" <?php endif;?>>
+							<a href="/admin/addTheme">Add/Edit theme</a>
+						</li>
+						<li <?php if($active == 'themesList'):?>class="open" <?php endif;?>>
+							<a href="/admin/themesList">Themes list</a>
+						</li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->
