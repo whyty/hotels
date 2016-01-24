@@ -4,6 +4,7 @@
 <script src="/public/js/bootstrap.min.js"></script>
 <script src="/public/js/moment-with-locales.js"></script>
 <script src="/public/js/bootstrap-datetimepicker.min.js"></script>
+<script src="/public/js/bootstrap-multiselect.js"></script>
 <script src="/public/js/admin.js"></script>
 </body>
 </html>

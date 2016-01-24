@@ -30,64 +30,53 @@
 		<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
 		<div class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav side-nav">
-				<li <?php if($active == 'index'):?>class="active" <?php endif;?>>
-					<a href="/admin"><i class="fa fa-fw fa-dashboard"></i> Home</a>
-				</li>
-				<li>
-					<a href="javascript:void(0);" data-toggle="collapse" data-target="#hotels"><i class="fa fa-fw fa-bed"></i> Hotels</a>
-					<ul id="hotels" class="dropdown <?php if($parentActive && $parentActive == 'hotels'):?>open<?php else:?>collapse<?php endif;?>">
-						<li <?php if($active == 'addHotel'):?>class="open" <?php endif;?>>
-							<a href="/admin/addHotel">Add/Edit hotel</a>
-						</li>
-						<li <?php if($active == 'hotelsList'):?>class="open" <?php endif;?>>
-							<a href="/admin/hotelsList">Hotel list</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:void(0);" data-toggle="collapse" data-target="#intervals"><i class="fa fa-clock-o"></i> Time Intervals</a>
-					<ul id="intervals" class="dropdown <?php if($parentActive && $parentActive == 'intervals'):?>open<?php else:?>collapse<?php endif;?>">
-						<li <?php if($active == 'addInterval'):?>class="open" <?php endif;?>>
-							<a href="/admin/addInterval">Add/Edit interval</a>
-						</li>
-						<li <?php if($active == 'intervalsList'):?>class="open" <?php endif;?>>
-							<a href="/admin/intervalsList">Intervals list</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:void(0);" data-toggle="collapse" data-target="#airports"><i class="fa fa-plane"></i> Airports</a>
-					<ul id="airports" class="dropdown <?php if($parentActive && $parentActive == 'airports'):?>open<?php else:?>collapse<?php endif;?>">
-						<li <?php if($active == 'addAirport'):?>class="open" <?php endif;?>>
-							<a href="/admin/addAirport">Add/Edit airport</a>
-						</li>
-						<li <?php if($active == 'airportsList'):?>class="open" <?php endif;?>>
-							<a href="/admin/airportsList">Airports list</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:void(0);" data-toggle="collapse" data-target="#classifications"><i class="fa fa-clipboard"></i> Classifications</a>
-					<ul id="classifications" class="dropdown <?php if($parentActive && $parentActive == 'classifications'):?>open<?php else:?>collapse<?php endif;?>">
-						<li <?php if($active == 'addClassification'):?>class="open" <?php endif;?>>
-							<a href="/admin/addClassification">Add/Edit classification</a>
-						</li>
-						<li <?php if($active == 'classificationsList'):?>class="open" <?php endif;?>>
-							<a href="/admin/classificationsList">Classifications list</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="javascript:void(0);" data-toggle="collapse" data-target="#themes"><i class="fa fa-bookmark"></i> Themes</a>
-					<ul id="themes" class="dropdown <?php if($parentActive && $parentActive == 'themes'):?>open<?php else:?>collapse<?php endif;?>">
-						<li <?php if($active == 'addTheme'):?>class="open" <?php endif;?>>
-							<a href="/admin/addTheme">Add/Edit theme</a>
-						</li>
-						<li <?php if($active == 'themesList'):?>class="open" <?php endif;?>>
-							<a href="/admin/themesList">Themes list</a>
-						</li>
-					</ul>
-				</li>
+                            <li <?php if($active == 'index'):?>class="active" <?php endif;?>>
+                                    <a href="/admin"><i class="fa fa-fw fa-dashboard"></i> Home</a>
+                            </li>
+                            <li <?php if($active == 'hotelIntervals'):?>class="active" <?php endif;?>>
+                                <a href="javascript:void(0);" data-toggle="collapse" data-target="#hotels"><i class="fa fa-fw fa-bed"></i> Hotels</a>
+                                <ul id="hotels" class="dropdown <?php if($parentActive && $parentActive == 'hotels'):?>open<?php else:?>collapse<?php endif;?>">
+                                    <li <?php if($active == 'addHotel'):?>class="open" <?php endif;?>>
+                                            <a href="/admin/addHotel">Add/Edit hotel</a>
+                                    </li>
+                                    <li <?php if($active == 'hotelsList'):?>class="open" <?php endif;?>>
+                                            <a href="/admin/hotelsList">Hotel list</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-toggle="collapse" data-target="#airports"><i class="fa fa-plane"></i> Airports</a>
+                                <ul id="airports" class="dropdown <?php if($parentActive && $parentActive == 'airports'):?>open<?php else:?>collapse<?php endif;?>">
+                                        <li <?php if($active == 'addAirport'):?>class="open" <?php endif;?>>
+                                                <a href="/admin/addAirport">Add/Edit airport</a>
+                                        </li>
+                                        <li <?php if($active == 'airportsList'):?>class="open" <?php endif;?>>
+                                                <a href="/admin/airportsList">Airports list</a>
+                                        </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-toggle="collapse" data-target="#classifications"><i class="fa fa-clipboard"></i> Classifications</a>
+                                <ul id="classifications" class="dropdown <?php if($parentActive && $parentActive == 'classifications'):?>open<?php else:?>collapse<?php endif;?>">
+                                        <li <?php if($active == 'addClassification'):?>class="open" <?php endif;?>>
+                                                <a href="/admin/addClassification">Add/Edit classification</a>
+                                        </li>
+                                        <li <?php if($active == 'classificationsList'):?>class="open" <?php endif;?>>
+                                                <a href="/admin/classificationsList">Classifications list</a>
+                                        </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-toggle="collapse" data-target="#themes"><i class="fa fa-bookmark"></i> Themes</a>
+                                <ul id="themes" class="dropdown <?php if($parentActive && $parentActive == 'themes'):?>open<?php else:?>collapse<?php endif;?>">
+                                        <li <?php if($active == 'addTheme'):?>class="open" <?php endif;?>>
+                                                <a href="/admin/addTheme">Add/Edit theme</a>
+                                        </li>
+                                        <li <?php if($active == 'themesList'):?>class="open" <?php endif;?>>
+                                                <a href="/admin/themesList">Themes list</a>
+                                        </li>
+                                </ul>
+                            </li>
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->
