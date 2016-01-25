@@ -77,6 +77,17 @@
                                         </li>
                                 </ul>
                             </li>
+                            <li>
+                                <a href="javascript:void(0);" data-toggle="collapse" data-target="#vacations"><i class="fa fa-globe"></i> Vacations</a>
+                                <ul id="vacations" class="dropdown <?php if($parentActive && $parentActive == 'vacations'):?>open<?php else:?>collapse<?php endif;?>">
+                                        <li <?php if($active == 'addVacation'):?>class="open" <?php endif;?>>
+                                                <a href="/admin/addVacation">Add/Edit vacation</a>
+                                        </li>
+                                        <li <?php if($active == 'vacationsList'):?>class="open" <?php endif;?>>
+                                                <a href="/admin/vacationsList">Vacations list</a>
+                                        </li>
+			</ul>
+                            </li>
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->

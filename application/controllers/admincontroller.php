@@ -20,6 +20,10 @@ class AdminController extends VanillaController {
         $this->_theme = new Theme();
         $this->_country = new Country();
         $this->_vacation = new Vacation();
+        $this->_vacation_theme = new Vacation_Theme();
+        $this->_vacation_classification = new Vacation_Classification();
+        $this->_vacation_hotel = new Vacation_Hotel();
+        $this->_vacation_airport = new Vacation_Airport();
         $this->set('parentActive', '');
         $this->set('active', $this->_action);
         $this->set('sectionName', '');
@@ -344,24 +348,47 @@ class AdminController extends VanillaController {
         $themes = $this->_theme->search();
         $hotels = $this->_hotel->search();
         $classifications = $this->_classification->search();
+        
+       
         if ($id) {
             $this->_vacation->where(array('id' => $id));
             $data = $this->_vacation->search();
             $vacation = $data[0];
             $sectionName = 'Vacation &raquo; ' . $data[0]['title'];
+            $this->_vacation_airport->where(array('vacation_id' => $id));
+            $this->_vacation_theme->where(array('vacation_id' => $id));
+            $this->_vacation_hotel->where(array('vacation_id' => $id));
+            $this->_vacation_classification->where(array('vacation_id' => $id));
+
+            $selectedAirports = $this->getIds($this->_vacation_airport->search(), 'airport_id');
+            $selectedThemes = $this->getIds($this->_vacation_theme->search(), 'theme_id');
+            $selectedHotels = $this->getIds($this->_vacation_hotel->search(), 'hotel_id');
+            $selectedClassifications = $this->getIds($this->_vacation_classification->search(), 'classification_id');
         } else {
             $sectionName = 'Vacation add';
-            $vacation = false;
+            $vacation = $selectedAirports = $selectedThemes = $selectedHotels = $selectedClassifications = false;
         }
         $this->set('username', $this->_username);
         $this->set('parentActive', 'vacations');
         $this->set('sectionName', $sectionName);
         $this->set('vacation', $vacation);
         $this->set('airports', $airports);
+        $this->set('selectedAirports', $selectedAirports);
         $this->set('themes', $themes);
+        $this->set('selectedThemes', $selectedThemes);
         $this->set('hotels', $hotels);
+        $this->set('selectedHotels', $selectedHotels);
         $this->set('classifications', $classifications);
+        $this->set('selectedClassifications', $selectedClassifications);
         $this->set('countries', $countries);
+    }
+    
+    public function getIds($data, $columnName){
+        $result = array();
+        foreach ($data as $item){
+            array_push($result,$item[$columnName]);
+        }
+        return $result;
     }
     
     public function insertVacation(){
@@ -380,11 +407,55 @@ class AdminController extends VanillaController {
         if (isset($_POST['currency'])) $this->_vacation->currency = $_POST['currency'];
         if (isset($_POST['all_taxes'])) $this->_vacation->all_taxes = $_POST['all_taxes'];
         if (isset($_POST['availability'])) $this->_vacation->availability = $_POST['availability'];
-        
         $this->_vacation->save();
-        redirect("admin/vacationsList");
+        
+        $this->_vacation->orderby('id', 'DESC');
+        $vacationData = $this->_vacation->search();
+        $vacationId = (count($vacationData) > 0) ? (int) $vacationData[0]['id'] : $_POST['id'];
+        $this->saveData2AdiacentTable($vacationId, 'vacation_id', 'theme_id', '_vacation_theme', $_POST['themes']);
+        $this->saveData2AdiacentTable($vacationId, 'vacation_id', 'hotel_id', '_vacation_hotel', $_POST['hotels']);
+        $this->saveData2AdiacentTable($vacationId, 'vacation_id', 'airport_id', '_vacation_airport', $_POST['airports']);
+        $this->saveData2AdiacentTable($vacationId, 'vacation_id', 'classification_id', '_vacation_classification', $_POST['classifications']);
+        
+        
+        redirect("/admin/vacationsList");
     }
     
+    public function saveData2AdiacentTable($parentIdValue, $parentIdName, $secondaryIdName, $currentTable, $data){
+        
+        if (isset($data)) {
+            $this->{$currentTable}->where(array($parentIdName => $parentIdValue));
+            $temp = $this->{$currentTable}->search();
+            $arr = array();
+            foreach ($temp as $item) {
+                array_push($arr, $item[$secondaryIdName]);
+            }
+            $diff = array_diff($arr, $data);
+            foreach ($data as $value) {
+                if ($temp) {
+                    if (!in_array($value, $diff) && !in_array($value, $arr)) {
+                        $this->{$currentTable}->{$parentIdName} = $parentIdValue;
+                        $this->{$currentTable}->{$secondaryIdName} = $value;
+                        $this->{$currentTable}->save();
+                    }
+                } else {
+                    $this->{$currentTable}->{$parentIdName} = $parentIdValue;
+                    $this->{$currentTable}->{$secondaryIdName} = $value;
+                    $this->{$currentTable}->save();
+                }
+            }
+            if ($temp) {
+                foreach ($temp as $d) {
+                    if (in_array($d[$secondaryIdName], $diff)) {
+                        $this->{$currentTable}->id = $d['id'];
+                        $this->{$currentTable}->delete();
+                    }
+                }
+            }
+        }
+    }
+
+
     public function vacationsList(){
         $this->isLoggedIn();
         $this->set('username', $this->_username);
@@ -400,10 +471,27 @@ class AdminController extends VanillaController {
         $data = $this->_vacation->search();
         if ($data) {
             $this->_vacation->id = $id;
+            $this->deletaDataFromAdiacentTable($id, 'vacation_id', '_vacation_airport');
+            $this->deletaDataFromAdiacentTable($id, 'vacation_id', '_vacation_classification');
+            $this->deletaDataFromAdiacentTable($id, 'vacation_id', '_vacation_hotel');
+            $this->deletaDataFromAdiacentTable($id, 'vacation_id', '_vacation_theme');
             $this->_vacation->delete();
         }
-        redirect('admin/vacationsList');
+        redirect('/admin/vacationsList');
     }
+    
+    function deletaDataFromAdiacentTable($parentIdValue, $parentIdName, $currentTable){
+        $this->{$currentTable}->where(array($parentIdName => $parentIdValue));
+        $dataToDelete = $this->{$currentTable}->search();
+        if($dataToDelete){
+            foreach($dataToDelete as $d){
+                $this->{$currentTable}->id = $d['id'];
+                $this->{$currentTable}->delete();
+                
+            }
+        }
+    }
+    
     function afterAction() {
         
     }
