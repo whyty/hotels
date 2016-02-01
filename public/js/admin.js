@@ -45,8 +45,8 @@ $(document).ready(function () {
     $("#to_date").on("dp.change", function (e) {
         $('#from_date').data("DateTimePicker").maxDate(e.date);
     });
-    $("#add_interval").click(function(){
-        $(".add_interval").removeClass("hide");
+    $("#add_data").click(function(){
+        $(".add_data").removeClass("hide");
     });
     $(".multiselect").multiselect();
 });

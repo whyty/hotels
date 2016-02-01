@@ -24,6 +24,7 @@ class AdminController extends VanillaController {
         $this->_vacation_classification = new Vacation_Classification();
         $this->_vacation_hotel = new Vacation_Hotel();
         $this->_vacation_airport = new Vacation_Airport();
+        $this->_photo = new Photo();
         $this->set('parentActive', '');
         $this->set('active', $this->_action);
         $this->set('sectionName', '');
@@ -188,7 +189,6 @@ class AdminController extends VanillaController {
         $this->set('username', $this->_username);
         $this->set('sectionName', 'Time Intervals List');
         $this->set('parentActive', 'intervals');
-        
     }
 
     function deleteInterval($id) {
@@ -294,8 +294,8 @@ class AdminController extends VanillaController {
         }
         redirect('/admin/classificationsList');
     }
-    
-    public function addTheme($id = null){
+
+    public function addTheme($id = null) {
         $this->isLoggedIn();
         if ($id) {
             $this->_theme->where(array('id' => $id));
@@ -311,8 +311,8 @@ class AdminController extends VanillaController {
         $this->set('sectionName', $sectionName);
         $this->set('theme', $theme);
     }
-    
-    public function insertTheme(){
+
+    public function insertTheme() {
         $this->isLoggedIn();
         if (isset($_POST['id']) && $_POST['id'] != '')
             $this->_theme->id = $_POST['id'];
@@ -321,17 +321,17 @@ class AdminController extends VanillaController {
         $this->_theme->save();
         redirect("/admin/themesList");
     }
-    
-    public function themesList(){
+
+    public function themesList() {
         $this->isLoggedIn();
         $this->set('username', $this->_username);
         $this->set('sectionName', 'Themes List');
         $this->set('parentActive', 'themes');
         $themesList = $this->_theme->search();
-        $this->set('themes', $themesList); 
+        $this->set('themes', $themesList);
     }
-    
-    public function deleteTheme($id){
+
+    public function deleteTheme($id) {
         $this->isLoggedIn();
         $this->_theme->where(array('id' => $id));
         $data = $this->_theme->search();
@@ -339,17 +339,18 @@ class AdminController extends VanillaController {
             $this->_theme->id = $id;
             $this->_theme->delete();
         }
-        redirect('admin/themesList');
+        redirect('/admin/themesList');
     }
-    public function addVacation($id = null){
+
+    public function addVacation($id = null) {
         $this->isLoggedIn();
         $countries = $this->_country->search();
         $airports = $this->_airport->search();
         $themes = $this->_theme->search();
         $hotels = $this->_hotel->search();
         $classifications = $this->_classification->search();
-        
-       
+
+
         if ($id) {
             $this->_vacation->where(array('id' => $id));
             $data = $this->_vacation->search();
@@ -382,33 +383,47 @@ class AdminController extends VanillaController {
         $this->set('selectedClassifications', $selectedClassifications);
         $this->set('countries', $countries);
     }
-    
-    public function getIds($data, $columnName){
+
+    public function getIds($data, $columnName) {
         $result = array();
-        foreach ($data as $item){
-            array_push($result,$item[$columnName]);
+        foreach ($data as $item) {
+            array_push($result, $item[$columnName]);
         }
         return $result;
     }
-    
-    public function insertVacation(){
+
+    public function insertVacation() {
         $this->isLoggedIn();
-        if (isset($_POST['id']) && $_POST['id'] != '') $this->_vacation->id = $_POST['id'];
-        if (isset($_POST['live'])) $this->_vacation->live = $_POST['live'];
-        if (isset($_POST['title'])) $this->_vacation->title = $_POST['title'];
-        if (isset($_POST['nights'])) $this->_vacation->nights = $_POST['nights'];
-        if (isset($_POST['country'])) $this->_vacation->country = $_POST['country'];
-        if (isset($_POST['city'])) $this->_vacation->city = $_POST['city'];
-        if (isset($_POST['description'])) $this->_vacation->description = $_POST['description'];
-        if (isset($_POST['transportation'])) $this->_vacation->transportation = $_POST['transportation'];
-        if (isset($_POST['departure'])) $this->_vacation->departure = $_POST['departure'];
-        if (isset($_POST['included_services'])) $this->_vacation->included_services = $_POST['included_services'];
-        if (isset($_POST['additional_services'])) $this->_vacation->additional_services = $_POST['additional_services'];
-        if (isset($_POST['currency'])) $this->_vacation->currency = $_POST['currency'];
-        if (isset($_POST['all_taxes'])) $this->_vacation->all_taxes = $_POST['all_taxes'];
-        if (isset($_POST['availability'])) $this->_vacation->availability = $_POST['availability'];
+        if (isset($_POST['id']) && $_POST['id'] != '')
+            $this->_vacation->id = $_POST['id'];
+        if (isset($_POST['live']))
+            $this->_vacation->live = $_POST['live'];
+        if (isset($_POST['title']))
+            $this->_vacation->title = $_POST['title'];
+        if (isset($_POST['nights']))
+            $this->_vacation->nights = $_POST['nights'];
+        if (isset($_POST['country']))
+            $this->_vacation->country = $_POST['country'];
+        if (isset($_POST['city']))
+            $this->_vacation->city = $_POST['city'];
+        if (isset($_POST['description']))
+            $this->_vacation->description = $_POST['description'];
+        if (isset($_POST['transportation']))
+            $this->_vacation->transportation = $_POST['transportation'];
+        if (isset($_POST['departure']))
+            $this->_vacation->departure = $_POST['departure'];
+        if (isset($_POST['included_services']))
+            $this->_vacation->included_services = $_POST['included_services'];
+        if (isset($_POST['additional_services']))
+            $this->_vacation->additional_services = $_POST['additional_services'];
+        if (isset($_POST['currency']))
+            $this->_vacation->currency = $_POST['currency'];
+        if (isset($_POST['all_taxes']))
+            $this->_vacation->all_taxes = $_POST['all_taxes'];
+        if (isset($_POST['availability']))
+            $this->_vacation->availability = $_POST['availability'];
         $this->_vacation->save();
-        
+
         $this->_vacation->orderby('id', 'DESC');
         $vacationData = $this->_vacation->search();
         $vacationId = (count($vacationData) > 0) ? (int) $vacationData[0]['id'] : $_POST['id'];
@@ -416,13 +431,12 @@ class AdminController extends VanillaController {
         $this->saveData2AdiacentTable($vacationId, 'vacation_id', 'hotel_id', '_vacation_hotel', $_POST['hotels']);
         $this->saveData2AdiacentTable($vacationId, 'vacation_id', 'airport_id', '_vacation_airport', $_POST['airports']);
         $this->saveData2AdiacentTable($vacationId, 'vacation_id', 'classification_id', '_vacation_classification', $_POST['classifications']);
-        
-        
+
+
         redirect("/admin/vacationsList");
     }
-    
-    public function saveData2AdiacentTable($parentIdValue, $parentIdName, $secondaryIdName, $currentTable, $data){
-        
+
+    public function saveData2AdiacentTable($parentIdValue, $parentIdName, $secondaryIdName, $currentTable, $data) {
         if (isset($data)) {
             $this->{$currentTable}->where(array($parentIdName => $parentIdValue));
             $temp = $this->{$currentTable}->search();
@@ -455,17 +469,16 @@ class AdminController extends VanillaController {
         }
     }
 
-
-    public function vacationsList(){
+    public function vacationsList() {
         $this->isLoggedIn();
         $this->set('username', $this->_username);
         $this->set('sectionName', 'Vacations List');
         $this->set('parentActive', 'vacations');
         $vacationsList = $this->_vacation->search();
-        $this->set('vacations', $vacationsList); 
+        $this->set('vacations', $vacationsList);
     }
-    
-    public function deleteVacation($id){
+
+    public function deleteVacation($id) {
         $this->isLoggedIn();
         $this->_vacation->where(array('id' => $id));
         $data = $this->_vacation->search();
@@ -479,20 +492,136 @@ class AdminController extends VanillaController {
         }
         redirect('/admin/vacationsList');
     }
-    
-    function deletaDataFromAdiacentTable($parentIdValue, $parentIdName, $currentTable){
+
+    function deletaDataFromAdiacentTable($parentIdValue, $parentIdName, $currentTable) {
         $this->{$currentTable}->where(array($parentIdName => $parentIdValue));
         $dataToDelete = $this->{$currentTable}->search();
-        if($dataToDelete){
-            foreach($dataToDelete as $d){
+        if ($dataToDelete) {
+            foreach ($dataToDelete as $d) {
                 $this->{$currentTable}->id = $d['id'];
                 $this->{$currentTable}->delete();
-                
             }
         }
     }
+
+    public function vacationPhotos($id) {
+        $this->isLoggedIn();
+        $this->_photo->where(array('vacation_id' => $id));
+        $photos = $this->_photo->search();
+        $this->set('username', $this->_username);
+        $this->set('photos', $photos);
+        $this->set('vacation_id', $id);
+        $this->set('sectionName', 'Vacations photos');
+        $this->set('parentActive', 'vacations');
+    }
+
+    function cwUpload($field_name = '', $target_folder = '', $file_name = '', $thumb = FALSE, $thumb_folder = '', $thumb_width = '', $thumb_height = '') {
+
+        //folder path setup
+        $target_path = $target_folder;
+        $thumb_path = $thumb_folder;
+
+        //file name setup
+        $filename_err = explode(".", $_FILES[$field_name]['name']);
+        $filename_err_count = count($filename_err);
+        $file_ext = $filename_err[$filename_err_count - 1];
+        if ($file_name != '') {
+            $fileName = $file_name . '.' . $file_ext;
+        } else {
+            $fileName = $_FILES[$field_name]['name'];
+        }
+
+        //upload image path
+        $upload_image = $target_path . basename($fileName);
+
+        //upload image
+        if (move_uploaded_file($_FILES[$field_name]['tmp_name'], $upload_image)) {
+            //thumbnail creation
+            if ($thumb == TRUE) {
+                $thumbnail = $thumb_path . $fileName;
+                list($width, $height) = getimagesize($upload_image);
+                $thumb_create = imagecreatetruecolor($thumb_width, $thumb_height);
+                switch ($file_ext) {
+                    case 'jpg':
+                        $source = imagecreatefromjpeg($upload_image);
+                        break;
+                    case 'jpeg':
+                        $source = imagecreatefromjpeg($upload_image);
+                        break;
+
+                    case 'png':
+                        $source = imagecreatefrompng($upload_image);
+                        break;
+                    case 'gif':
+                        $source = imagecreatefromgif($upload_image);
+                        break;
+                    default:
+                        $source = imagecreatefromjpeg($upload_image);
+                }
+
+                imagecopyresized($thumb_create, $source, 0, 0, 0, 0, $thumb_width, $thumb_height, $width, $height);
+                switch ($file_ext) {
+                    case 'jpg' || 'jpeg':
+                        imagejpeg($thumb_create, $thumbnail, 100);
+                        break;
+                    case 'png':
+                        imagepng($thumb_create, $thumbnail, 100);
+                        break;
+
+                    case 'gif':
+                        imagegif($thumb_create, $thumbnail, 100);
+                        break;
+                    default:
+                        imagejpeg($thumb_create, $thumbnail, 100);
+                }
+            }
+
+            return $fileName;
+        } else {
+            return false;
+        }
+    }
+
+    function savePhoto() {
+        if (!is_dir("uploads/"))
+            mkdir("uploads/", 0777);
+        if (!is_dir("uploads/thumbs/"))
+            mkdir("uploads/thumbs/", 0777);
+        $vacation_id = $_POST['vacation_id'];
+        $image =  explode(".", $_FILES['photo']['name']);
+        $filename = rand(1, 999) . '-' . $image[0];
+        if (isset($_POST["submit"])) {
+            if (!empty($_FILES['photo']['name'])) {
+                $upload_img = $this->cwUpload('photo', 'uploads/', $filename, TRUE, 'uploads/thumbs/', '400', '300');
+                if($upload_img){
+                    $this->_photo->vacation_id = $vacation_id;
+                    $this->_photo->thumb = $upload_img;
+                    $this->_photo->file = $upload_img;
+                    $this->_photo->save();
+                }
+            }
+        }
+        redirect('/admin/vacationPhotos/' . $vacation_id);
+    }
     
+    public function deletePhoto($id){
+        $this->isLoggedIn();
+        $this->_photo->where(array('id' => $id));
+        $data = $this->_photo->search();
+
+        if($data){
+            unlink('uploads/' . $data[0]['file']);
+            unlink('uploads/thumbs/' . $data[0]['file']);
+            $this->_photo->id = $data[0]['id'];
+            $this->_photo->file = ' ';
+            $this->_photo->save();
+            redirect('/admin/vacationPhotos/' . $data[0]['vacation_id']);
+        }
+        
+    }
+
     function afterAction() {
         
     }
+
 }

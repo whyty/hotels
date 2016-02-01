@@ -347,3 +347,20 @@ textarea {
     margin-left: -20px;
     margin-right: 0;
 }
+
+.thumb-wrapper {
+    position: relative;
+}
+
+.add-data {
+    margin-top: 20px;
+}
+
+.custom-delete {
+    position:absolute;
+    bottom:5px;
+    right:5px;
+    margin:0;
+    padding:5px 3px;
+    cursor: pointer;
+}

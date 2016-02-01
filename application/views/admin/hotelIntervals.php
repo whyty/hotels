@@ -4,11 +4,11 @@
         <div class="btn-toolbar">
             <p>Time intervals</p>
         </div>
-        <button type="button" class="btn btn-info" id="add_interval">
+        <button type="button" class="btn btn-info" id="add_data">
             <span>Add time interval</span>
         </button>
 
-        <div class="add_interval hide">
+        <div class="add_data hide">
             <form role="form" action="/admin/insertInterval" method="post" id="intervalForm">
             <input type="hidden" name="id" value="" />
             <input type="hidden" name="hotel_id" value="<?php echo $hotelId ?>" />
@@ -47,7 +47,7 @@
         </div>
 
 
-        <!ul class="list-group">
+        <ul class="list-group">
         <?php foreach ($intervals as $interval): ?>
             <?php if ($interval['hotel_id'] == $hotelId) : ?>
                 <li class="list-group-item time-item">
