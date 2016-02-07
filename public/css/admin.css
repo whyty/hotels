@@ -357,10 +357,20 @@ textarea {
 }
 
 .custom-delete {
-    position:absolute;
-    bottom:5px;
-    right:5px;
-    margin:0;
-    padding:5px 3px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    margin: 0;
+    padding: 5px 3px;
     cursor: pointer;
+}
+
+.export {
+    float: right;
+    margin-bottom: 15px;
+}
+
+.alert-group {
+    float: left;
+    width: 100%;
 }

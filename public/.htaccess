@@ -1,6 +1,5 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteRule ^(adminer\.php) - [L]
  
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

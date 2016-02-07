@@ -21,7 +21,7 @@
 		<div class="form-group input-group">
 			<span class="input-group-addon">Country</span>
                         <select class="form-control" name="country" required>
-                            <option>Select country</option>
+                            <option value="">Select country</option>
                             <?php foreach($countries as $country) :?>
                             <option <?php if($vacation && $vacation['country'] == $country['name']) echo 'selected="selected"'?> value="<?php echo $country['name']?>"><?php echo $country['name']?></option>
                             <?php endforeach; ?>
@@ -37,7 +37,7 @@
 		</div>
 		<div class="form-group input-group">
 			<span class="input-group-addon">Transportation</span>
-                        <input type="text" class="form-control" placeholder="Vacation Transportation" value="plane" disabled name="transportation" required>
+                        <input type="text" class="form-control" placeholder="Vacation Transportation" value="<?php echo $vacation ?  $vacation['transportation'] : '' ?>" name="transportation" required>
 		</div>
                 
                 <?php if(count($airports) > 0) :?>

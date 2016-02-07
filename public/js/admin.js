@@ -49,5 +49,30 @@ $(document).ready(function () {
         $(".add_data").removeClass("hide");
     });
     $(".multiselect").multiselect();
+    
+    $('button.export').click(function(e){
+        var ids = [];
+        $('[name="vacationSelected[]"]').each(function() {
+            if($(this).is(':checked')) ids.push($(this).val());            
+        });
+        if(ids.length){
+            $.ajax({
+                url: '/admin/exportData',
+                method: "post",
+                data: {data: ids}
+            });
+            $(".alert-group").removeClass("hide");
+            $('[name="vacationSelected[]"]').removeAttr('checked');
+        }
+    });
 });
+$(document).mouseup(function (e)
+{
+    var container = $(".alert-group");
 
+    if (!container.is(e.target) 
+        && container.has(e.target).length === 0)
+    {
+        container.addClass("hide");
+    }
+});
