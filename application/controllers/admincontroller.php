@@ -625,7 +625,7 @@ class AdminController extends VanillaController {
     }
 
     function exportData() {
-	$ids = isset($_POST['data']) ? $_POST['data'] : '';
+	$data= isset($_POST['data']) ? $_POST['data'] : '';
 	if (!is_dir("downloads/"))
 	    mkdir("downloads/", 0777);
 	if ($data) {
