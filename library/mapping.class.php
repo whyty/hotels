@@ -119,5 +119,19 @@ class Mapping {
         'key' => 'price_plus_ron',
         'tag' => 'pret_plus_ron',
     ),
+    'vacation' => array(
+        'key' => 'vacation',
+        'tag' => 'sejur',
+    ),
 );
+    
+    function reverseMapping(){
+	$result = array();
+	foreach(self::$vacation_tags as $key => $value){
+	    $result[$value['tag']] = $key;
+	}
+	return $result;
+    }
+    
+     public static $mapping_nodes = array("hotel", "interval", "country", "airport", "classification", "theme", "photo", "vacation");
 }

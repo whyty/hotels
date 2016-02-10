@@ -412,4 +412,8 @@ class SQLQuery {
     function getError() {
         return mysql_error($this->_dbHandle);
     }
+    
+    public function getDescribe(){
+	return $this->_describe;
+    }
 }

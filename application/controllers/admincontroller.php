@@ -2,7 +2,6 @@
 
 class AdminController extends VanillaController {
 
-    protected $_error;
     protected $_username;
     protected $_hotel;
     protected $_interval;
@@ -349,6 +348,7 @@ class AdminController extends VanillaController {
 	$themes = $this->_theme->search();
 	$hotels = $this->_hotel->search();
 	$classifications = $this->_classification->search();
+	$errors = isset($_SESSION['errors']) ? $_SESSION['errors'] : false;
 
 
 	if ($id) {
@@ -382,6 +382,7 @@ class AdminController extends VanillaController {
 	$this->set('classifications', $classifications);
 	$this->set('selectedClassifications', $selectedClassifications);
 	$this->set('countries', $countries);
+	$this->set('errors', $errors);
     }
 
     public function getIds($data, $columnName) {
@@ -477,7 +478,7 @@ class AdminController extends VanillaController {
 	$this->set("exported", 0);
 	$vacationsList = $this->_vacation->search();
 	$this->set('vacations', $vacationsList);
-	if(isset($_POST['data'])){
+	if (isset($_POST['data'])) {
 	    $this->set("exported", 1);
 	    $this->exportData($_POST['data']);
 	}
@@ -625,7 +626,7 @@ class AdminController extends VanillaController {
     }
 
     function exportData() {
-	$data= isset($_POST['data']) ? $_POST['data'] : '';
+	$data = isset($_POST['data']) ? $_POST['data'] : '';
 	if (!is_dir("downloads/"))
 	    mkdir("downloads/", 0777);
 	if ($data) {
@@ -646,7 +647,7 @@ class AdminController extends VanillaController {
 			$vacationXml = $vacationsXml->appendChild($vacationXml);
 			foreach ($vacation as $key => $value) {
 			    if (isset(Mapping::$vacation_tags[$key])) {
-				switch ($value) {
+				switch ($key) {
 				    case 'country':
 					$country = $domtree->createElement(Mapping::$vacation_tags[$key]['tag']);
 					$country = $vacationXml->appendChild($country);
@@ -768,6 +769,174 @@ class AdminController extends VanillaController {
 	    return true;
 	}
 	return false;
+    }
+
+    function importData() {
+	if (!is_dir("uploads/xml/"))
+	    mkdir("uploads/xml/", 0777);
+	$_SESSION['errors'] = '';
+	if (isset($_POST['submit'])) {
+	    if (!empty($_FILES['file']['name'])) {
+		$file_arr = explode(".", $_FILES['file']['name']);
+		$file_ext = $file_arr[count($file_arr) - 1];
+		$file_path = "uploads/xml/" . basename($_FILES['file']['name']);
+		if ($file_ext == 'xml') {
+		    move_uploaded_file($_FILES['file']['tmp_name'], $file_path);
+		    $xml = file_get_contents($file_path);
+		    $array = $this->xml_to_array($xml);
+		    $this->array2Db($array);
+		} else {
+		    $_SESSION['errors'] = "Please upload an XML file";
+		}
+	    }
+	}
+	redirect("/admin/addVacation");
+    }
+
+    function xml_to_array($xml,$main_heading = '') {
+	$deXml = simplexml_load_string($xml);
+	$deJson = json_encode($deXml);
+	$xml_array = json_decode($deJson,TRUE);
+	if (! empty($main_heading)) {
+	    $returned = $xml_array[$main_heading];
+	    return $returned;
+	} else {
+	    return $xml_array;
+	}
+    }
+    
+    
+    function array2Db($data) {
+	$importMapping = Mapping::reverseMapping();
+	$exportMapping = Mapping::$vacation_tags;
+	if (count($data) > 0) {
+	    foreach ($data as $key => $value) {
+		$className = '';
+		if (isset($importMapping[$key]) && !is_numeric($key) && in_array($importMapping[$key], Mapping::$mapping_nodes)) {
+		    $className = ucfirst($importMapping[$key]);
+		}
+		if ($className) {
+		    if (is_array($value)) {
+			$classObject = "_" . strtolower($className);
+			if ($className == 'Vacation') {
+			    foreach ($this->{$classObject}->getDescribe() as $w) {
+				if ($w != 'id'){
+				    if($w == 'country' || $w == 'city'){
+				       $this->{$classObject}->{$w} = $value[$exportMapping[$w]['tag']]['nume']; 
+				    }else{
+					$this->{$classObject}->{$w} = $value[$exportMapping[$w]['tag']];
+				    }
+				}
+			    }
+			    $this->{$classObject}->save();
+			}
+			foreach ($value as $k => $j) {
+			    if(is_array($j) && $k != "tara" && $k != "oras"){
+				$this->_vacation->orderBy('id', 'DESC');
+				$vacation = $this->_vacation->search();
+				foreach ($j as $item => $worth) {
+				    if (is_array($worth)) {
+					foreach ($worth as $nKey => $nVal) {
+					    switch ($importMapping[$item]) {
+						case 'airport':
+						    $this->saveIntoTable('airport', $nVal, $vacation[0]['id']);
+						    break;
+						case 'classification':
+						    $this->saveIntoTable('classification', $nVal, $vacation[0]['id']);
+						    break;
+						case 'theme':
+						    $this->saveIntoTable('theme', $nVal, $vacation[0]['id']);
+						    break;
+						case 'photo':
+						    $this->addPhotoFromXML($nVal, $vacation[0]['id']);
+						    break;
+						case 'hotel':
+						    $this->addHotelFromXML($nVal, $vacation[0]['id']);
+						default :
+						    continue;
+					    }
+					    
+					}
+				    }
+				}
+			    }
+			}
+		    }
+		} else if (is_array($value)) {
+		    $this->array2Db($value);
+		}
+	    }
+	}
+    }
+
+    function saveIntoTable($table, $searchValue, $parentValue) {
+	$tableName = '_' . $table;
+	$tableNameColumn = $table . '_id';
+	$addiacentTableName = '_vacation_' . $table;
+	$this->{$tableName}->where(array('name' => $searchValue));
+	$result = $this->{$tableName}->search();
+	if ($result) {
+	    foreach ($result as $rez) {
+		$this->{$addiacentTableName}->{$tableNameColumn} = $rez['id'];
+		$this->{$addiacentTableName}->vacation_id = $parentValue;
+		$this->{$addiacentTableName}->save();
+	    }
+	}else{
+	    $this->{$tableName}->name = $searchValue;
+	    $this->{$tableName}->save();
+	    $this->{$tableName}->orderBy('id', 'DESC');
+	    $data = $this->{$tableName}->search();
+	    $this->{$addiacentTableName}->{$tableNameColumn} = $data[0]['id'];
+	    $this->{$addiacentTableName}->vacation_id = $parentValue;
+	    $this->{$addiacentTableName}->save();
+	}
+    }
+
+    function addPhotoFromXML($data, $vacationId) {
+	if (is_array($data)) {
+	    foreach ($array as $data) {
+		$this->_photo->file = $data;
+		$this->_photo->vacation_id = $vacationId;
+		$this->_photo->save();
+	    }
+	}else{
+	    $this->_photo->file = $data;
+	    $this->_photo->vacation_id = $vacationId;
+	    $this->_photo->save();
+	}
+    }
+
+    function addHotelFromXML($array, $parentId) {
+	$exportMapping = Mapping::$vacation_tags;
+	$importMapping = Mapping::reverseMapping();
+	foreach ($this->_hotel->getDescribe() as $w) {
+	    if ($w != 'id' && isset($exportMapping[$w]))
+		$this->_hotel->{$w} = $array[$exportMapping[$w]['tag']];
+	}
+	$this->_hotel->save();
+	$this->_hotel->orderBy('id', 'DESC');
+	$lastHotel = $this->_hotel->search();
+	$this->_vacation_hotel->hotel_id = $lastHotel[0]['id'];
+	$this->_vacation_hotel->vacation_id = $parentId;
+	$this->_vacation_hotel->save();
+	
+	foreach ($array as $k => $val) {
+	    if (is_array($val)) {
+		foreach ($val as $exK => $exVal) {
+		    if (is_array($exVal)) {
+			foreach ($exVal as $pK => $pV) {
+			    if (is_numeric($pK) && is_array($pV)) {
+				$this->_interval->hotel_id = $lastHotel[0]['id'];
+				foreach ($pV as $m => $l) {
+				    $this->_interval->{$importMapping[$m]} = $l;
+				}
+				$this->_interval->save();
+			    }
+			}
+		    }
+		}
+	    }
+	}
     }
 
     function afterAction() {
