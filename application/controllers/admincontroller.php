@@ -122,6 +122,12 @@ class AdminController extends VanillaController {
 	    $this->_hotel->stars = $_POST['stars'];
 	if (isset($_POST['meal']))
 	    $this->_hotel->meal = $_POST['meal'];
+	if (isset($_POST['latitude']))
+	    $this->_hotel->latitude = $_POST['latitude'];
+	if (isset($_POST['longitude']))
+	    $this->_hotel->longitude = $_POST['longitude'];
+	if (isset($_POST['location']))
+	    $this->_hotel->location = $_POST['location'];
 	$this->_hotel->save();
 
 	redirect("/admin/hotelsList");
@@ -619,8 +625,7 @@ class AdminController extends VanillaController {
 	    unlink('uploads/' . $data[0]['file']);
 	    unlink('uploads/thumbs/' . $data[0]['file']);
 	    $this->_photo->id = $data[0]['id'];
-	    $this->_photo->file = ' ';
-	    $this->_photo->save();
+	    $this->_photo->delete();
 	    redirect('/admin/vacationPhotos/' . $data[0]['vacation_id']);
 	}
     }
