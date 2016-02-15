@@ -14,14 +14,15 @@ var Travel = {
         }
         return false;
     },
-    intervalEdit: function(e){
+    dataEdit: function(e, selector){
        var data = jQuery.parseJSON($(e.currentTarget).attr('data-edit'));
        if(data){
+           $(e.currentTarget).parents(".list-group").find(".list-group-item").show();
            $(e.currentTarget).closest(".list-group-item").hide();
            for(var key in data){
-               $("#intervalForm input[name='" + key + "']").val(data[key]);
+               $(selector + " [name='" + key + "']").val(data[key]);
            }
-             $("#intervalForm").closest(".form-group").find(".add_interval").removeClass('hide');
+             $(selector).closest(".form-group").find(".add_data").removeClass('hide');
        }
     }
 }

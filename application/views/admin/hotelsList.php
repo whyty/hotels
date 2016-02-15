@@ -28,6 +28,7 @@
 				<td>
 					<a href="/admin/addHotel/<?php echo $hotel['id']?>" class="action" title="Edit hotel"><i class="fa fa-pencil"></i></a>
 					<a href="/admin/hotelIntervals/<?php echo $hotel['id']?>" class="action" title="Hotel intervals"><i class="fa fa-clock-o"></i></a>
+					<a href="/admin/hotelFacilities/<?php echo $hotel['id']?>" class="action" title="Hotel facilities"><i class="fa fa-archive"></i></a>
 					<a href="/admin/deleteHotel/<?php echo $hotel['id']?>" onclick="Travel.confirmDelete(event)" class="action" title="Delete hotel"><i class="fa fa-trash-o"></i></a>
 				</td>
 			</tr>

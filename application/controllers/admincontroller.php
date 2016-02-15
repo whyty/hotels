@@ -24,6 +24,7 @@ class AdminController extends VanillaController {
 	$this->_vacation_hotel = new Vacation_Hotel();
 	$this->_vacation_airport = new Vacation_Airport();
 	$this->_photo = new Photo();
+	$this->_hotel_facility = new Hotel_Facility();
 	$this->set('parentActive', '');
 	$this->set('active', $this->_action);
 	$this->set('sectionName', '');
@@ -96,6 +97,7 @@ class AdminController extends VanillaController {
     function addHotel($id = null) {
 	$this->isLoggedIn();
 	$this->set('username', $this->_username);
+	$countries = $this->_country->search();
 	$period = array();
 	if ($id) {
 	    $this->_hotel->where(array('id' => $id));
@@ -110,6 +112,7 @@ class AdminController extends VanillaController {
 	$this->set('sectionName', $sectionName);
 	$this->set('hotel', $hotel);
 	$this->set('parentActive', 'hotels');
+	$this->set('countries', $countries);
     }
 
     function insertHotel() {
@@ -128,6 +131,22 @@ class AdminController extends VanillaController {
 	    $this->_hotel->longitude = $_POST['longitude'];
 	if (isset($_POST['location']))
 	    $this->_hotel->location = $_POST['location'];
+	if (isset($_POST['phone']))
+	    $this->_hotel->phone = $_POST['phone'];
+	if (isset($_POST['email']))
+	    $this->_hotel->email = $_POST['email'];
+	if (isset($_POST['web']))
+	    $this->_hotel->web = $_POST['web'];
+	if (isset($_POST['gplus']))
+	    $this->_hotel->gplus = $_POST['gplus'];
+	if (isset($_POST['facebook']))
+	    $this->_hotel->facebook = $_POST['facebook'];
+	if (isset($_POST['twitter']))
+	    $this->_hotel->twitter = $_POST['twitter'];
+	if (isset($_POST['country']))
+	    $this->_hotel->country = $_POST['country'];
+	if (isset($_POST['city']))
+	    $this->_hotel->city = $_POST['city'];
 	$this->_hotel->save();
 
 	redirect("/admin/hotelsList");
@@ -942,6 +961,42 @@ class AdminController extends VanillaController {
 		}
 	    }
 	}
+    }
+    
+    function hotelFacilities($hotelId){
+	$this->isLoggedIn();
+	$data = $this->_hotel->search(array('id' => $hotelId));
+	$this->set('username', $this->_username);
+	$facilities = $this->_hotel_facility->search();
+	$sectionName = $data[0]['name'] . ' &raquo; Facilities';
+	$this->set('sectionName', $sectionName);
+	$this->set('hotelId', $hotelId);
+	$this->set('facilities', $facilities);
+	$this->set('parentActive', 'hotels');
+    }
+    
+    function insertFacility(){
+	$this->isLoggedIn();
+	if (isset($_POST['id']) && $_POST['id'] != '')
+	    $this->_hotel_facility->id = $_POST['id'];
+	if (isset($_POST['hotel_id']) && $_POST['hotel_id'] != '')
+	    $this->_hotel_facility->hotel_id = $_POST['hotel_id'];
+	if (isset($_POST['name']))
+	    $this->_hotel_facility->name = $_POST['name'];
+	if (isset($_POST['option']))
+	    $this->_hotel_facility->option = $_POST['option'];
+	$this->_hotel_facility->save();
+	redirect("/admin/hotelFacilities/" . $_POST['hotel_id']);
+    }
+    
+    function deleteFacility($id){
+	$this->isLoggedIn();
+	$this->_hotel_facility->where(array('id' => $id));
+	$data = $this->_hotel_facility->search();
+	$hotelId = $data[0]['hotel_id'];
+	$this->_hotel_facility->id = $id;
+	$this->_hotel_facility->delete();
+	redirect('/admin/hotelFacilities/' . $hotelId);
     }
 
     function afterAction() {

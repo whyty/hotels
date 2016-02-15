@@ -13,7 +13,7 @@
 		    <form role="form" action="/admin/insertVacation" method="post">
 			<input type="hidden" name="id" value="<?php echo $vacation ? $vacation['id'] : '' ?>" />
 			<div class="form-group input-group">
-			    <span class="input-group-addon">Live</span>
+			    <span class="input-group-addon custom-label">Live</span>
 			    <select name="live" class="form-control" required>
 				<option>Select</option>
 				<option <?php if ($vacation && $vacation['live'] == 1) echo 'selected="selected"' ?> value="1">True</option>
@@ -21,15 +21,15 @@
 			    </select>
 			</div>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">Title</span>
+			    <span class="input-group-addon custom-label">Title</span>
 			    <input type="text" class="form-control" placeholder="Vacation Title" value="<?php echo $vacation ? $vacation['title'] : '' ?>" name="title" required>
 			</div>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">Nights</span>
+			    <span class="input-group-addon custom-label">Nights</span>
 			    <input type="text" class="form-control" placeholder="Vacation Nights" value="<?php echo $vacation ? $vacation['nights'] : '' ?>" name="nights" required>
 			</div>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">Country</span>
+			    <span class="input-group-addon custom-label">Country</span>
 			    <select class="form-control" name="country" required>
 				<option value="">Select country</option>
 				<?php foreach ($countries as $country) : ?>
@@ -38,21 +38,21 @@
 			    </select>
 			</div>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">City</span>
+			    <span class="input-group-addon custom-label">City</span>
 			    <input type="text" class="form-control" placeholder="Vacation City" value="<?php echo $vacation ? $vacation['city'] : '' ?>" name="city" required>
 			</div>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">Description</span>
+			    <span class="input-group-addon custom-label">Description</span>
 			    <textarea class="form-control"  name="description" rows="5"><?php echo $vacation ? $vacation['description'] : '' ?></textarea>
 			</div>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">Transportation</span>
+			    <span class="input-group-addon custom-label">Transportation</span>
 			    <input type="text" class="form-control" placeholder="Vacation Transportation" value="<?php echo $vacation ? $vacation['transportation'] : '' ?>" name="transportation" required>
 			</div>
 
 			<?php if (count($airports) > 0) : ?>
     			<div class="form-group input-group">
-    			    <span class="input-group-addon">Airports</span>
+    			    <span class="input-group-addon custom-label">Airports</span>
     			    <select id="airport" class="multiselect form-control" name="airports[]" multiple>
 				    <?php foreach ($airports as $airport): ?>
 					<option value="<?php echo $airport['id']; ?>" <?php echo ($selectedAirports && in_array($airport['id'], $selectedAirports)) ? 'selected="selected"' : '' ?>><?php echo $airport['name'] ?></option>
@@ -61,23 +61,23 @@
     			</div>
 			<?php endif; ?>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">Departure</span>
+			    <span class="input-group-addon custom-label">Departure</span>
 			    <input type="text" class="form-control" placeholder="Vacation Departure" value="<?php echo $vacation ? $vacation['departure'] : '' ?>" name="departure" required>
 			</div>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">Included services</span>
+			    <span class="input-group-addon custom-label">Included services</span>
 			    <input type="text" class="form-control" placeholder="Vacation included services" value="<?php echo $vacation ? $vacation['included_services'] : '' ?>" name="included_services" required>
 			</div>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">Additional services</span>
+			    <span class="input-group-addon custom-label">Additional services</span>
 			    <input type="text" class="form-control" placeholder="Vacation additional services" value="<?php echo $vacation ? $vacation['additional_services'] : '' ?>" name="additional_services" required>
 			</div>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">Currency</span>
+			    <span class="input-group-addon custom-label">Currency</span>
 			    <input type="text" class="form-control" placeholder="Vacation currency" value="<?php echo $vacation ? $vacation['currency'] : '' ?>" name="currency" required>
 			</div>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">All taxes</span>
+			    <span class="input-group-addon custom-label">All taxes</span>
 			    <select name="all_taxes" class="form-control" required>
 				<option>Select</option>
 				<option <?php if ($vacation && $vacation['all_taxes'] == 1) {
@@ -93,12 +93,12 @@
 			    </select>
 			</div>
 			<div class="form-group input-group">
-			    <span class="input-group-addon">Validity</span>
+			    <span class="input-group-addon custom-label">Validity</span>
 			    <input type="text" class="form-control" placeholder="Vacation availability" value="<?php echo $vacation ? $vacation['availability'] : '' ?>" name="availability" required>
 			</div>
 			<?php if (count($themes) > 0) : ?>
     			<div class="form-group input-group">
-    			    <span class="input-group-addon">Themes</span>
+    			    <span class="input-group-addon custom-label">Themes</span>
     			    <select id="theme" class="multiselect form-control" name="themes[]" multiple>
 				    <?php foreach ($themes as $theme): ?>
 					<option value="<?php echo $theme['id']; ?>" <?php echo ($selectedThemes && in_array($theme['id'], $selectedThemes)) ? 'selected="selected"' : '' ?>><?php echo $theme['name'] ?></option>
@@ -108,7 +108,7 @@
 			<?php endif; ?>
 			<?php if (count($hotels) > 0) : ?>
     			<div class="form-group input-group">
-    			    <span class="input-group-addon">Hotels</span>
+    			    <span class="input-group-addon custom-label">Hotels</span>
     			    <select id="theme" class="multiselect form-control" name="hotels[]" multiple>
 				    <?php foreach ($hotels as $hotel): ?>
 					<option value="<?php echo $hotel['id']; ?>" <?php echo ($selectedHotels && in_array($hotel['id'], $selectedHotels)) ? 'selected="selected"' : '' ?>><?php echo $hotel['name'] ?></option>
@@ -118,7 +118,7 @@
 			<?php endif; ?>
 			<?php if (count($classifications) > 0) : ?>
     			<div class="form-group input-group">
-    			    <span class="input-group-addon">Classifications</span>
+    			    <span class="input-group-addon custom-label">Classifications</span>
     			    <select id="theme" class="multiselect form-control" name="classifications[]" multiple>
 				<?php foreach ($classifications as $classification): ?>
 					<option value="<?php echo $classification['id']; ?>" <?php echo ($selectedClassifications && in_array($classification['id'], $selectedClassifications)) ? 'selected="selected"' : '' ?>><?php echo $classification['name'] ?></option>
