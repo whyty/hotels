@@ -30,7 +30,7 @@
 			</div>
 			<div class="form-group input-group">
 			    <span class="input-group-addon custom-label">Country</span>
-			    <select class="form-control" name="country" required>
+			    <select class="form-control" id="vacationCountry" name="country" required>
 				<option value="">Select country</option>
 				<?php foreach ($countries as $country) : ?>
     				<option <?php if ($vacation && $vacation['country'] == $country['name']) echo 'selected="selected"' ?> value="<?php echo $country['name'] ?>"><?php echo $country['name'] ?></option>
@@ -99,7 +99,7 @@
 			<?php if (count($themes) > 0) : ?>
     			<div class="form-group input-group">
     			    <span class="input-group-addon custom-label">Themes</span>
-    			    <select id="theme" class="multiselect form-control" name="themes[]" multiple>
+    			    <select class="multiselect form-control" name="themes[]" multiple>
 				    <?php foreach ($themes as $theme): ?>
 					<option value="<?php echo $theme['id']; ?>" <?php echo ($selectedThemes && in_array($theme['id'], $selectedThemes)) ? 'selected="selected"' : '' ?>><?php echo $theme['name'] ?></option>
 				    <?php endforeach; ?>
@@ -109,7 +109,7 @@
 			<?php if (count($hotels) > 0) : ?>
     			<div class="form-group input-group">
     			    <span class="input-group-addon custom-label">Hotels</span>
-    			    <select id="theme" class="multiselect form-control" name="hotels[]" multiple>
+    			    <select id="vacationHotels" class="form-control" name="hotels[]" multiple>
 				    <?php foreach ($hotels as $hotel): ?>
 					<option value="<?php echo $hotel['id']; ?>" <?php echo ($selectedHotels && in_array($hotel['id'], $selectedHotels)) ? 'selected="selected"' : '' ?>><?php echo $hotel['name'] ?></option>
 				    <?php endforeach; ?>
@@ -119,7 +119,7 @@
 			<?php if (count($classifications) > 0) : ?>
     			<div class="form-group input-group">
     			    <span class="input-group-addon custom-label">Classifications</span>
-    			    <select id="theme" class="multiselect form-control" name="classifications[]" multiple>
+    			    <select class="multiselect form-control" name="classifications[]" multiple>
 				<?php foreach ($classifications as $classification): ?>
 					<option value="<?php echo $classification['id']; ?>" <?php echo ($selectedClassifications && in_array($classification['id'], $selectedClassifications)) ? 'selected="selected"' : '' ?>><?php echo $classification['name'] ?></option>
 				<?php endforeach; ?>

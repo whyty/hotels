@@ -50,6 +50,7 @@ $(document).ready(function () {
         $(".add_data").removeClass("hide");
     });
     $(".multiselect").multiselect();
+    $("#vacationHotels").multiselect();
     
     $('button.export').click(function(e){
         var ids = [];
@@ -65,6 +66,26 @@ $(document).ready(function () {
             $(".alert-group").removeClass("hide");
             $('[name="vacationSelected[]"]').removeAttr('checked');
         }
+    });
+    $("#vacationCountry").change(function(){
+        var country = $(this).val();
+        $.ajax({
+            url: "/admin/searchCountry",
+            method: 'POST',
+            data:{ country: country},
+            success: function(result){
+                $("#vacationHotels").multiselect('destroy');
+                $('#vacationHotels').find('option').remove();
+                if(result.status == '1'){
+                    for(var i = 0; i < result.hotels.length; i++){
+                        $("#vacationHotels").append('<option value="'+result.hotels[i]['id']+'">'+result.hotels[i]['name']+'</option>');
+                    }
+                }else{
+                    $("#vacationHotels").append('<option value="">No hotels</option>');
+                }
+                $("#vacationHotels").multiselect();
+            }
+        });
     });
 });
 $(document).mouseup(function (e)

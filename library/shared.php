@@ -109,6 +109,8 @@ function __autoload($className) {
 	require_once(ROOT . DS . 'application' . DS . 'controllers' . DS . strtolower($className) . '.php');
     } else if (file_exists(ROOT . DS . 'application' . DS . 'models' . DS . strtolower($className) . '.php')) {
 	require_once(ROOT . DS . 'application' . DS . 'models' . DS . strtolower($className) . '.php');
+    } else if(file_exists(ROOT . DS . 'application' . DS . 'helpers' . DS . strtolower($className) . '.php')) {
+	require_once(ROOT . DS . 'application' . DS . 'helpers' . DS . strtolower($className) . '.php');
     } else {
 	/* Error Generation Code Here */
     }
