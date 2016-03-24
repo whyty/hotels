@@ -106,16 +106,18 @@
     			    </select>
     			</div>
 			<?php endif; ?>
-			<?php if (count($hotels) > 0) : ?>
     			<div class="form-group input-group">
     			    <span class="input-group-addon custom-label">Hotels</span>
-    			    <select id="vacationHotels" class="form-control" name="hotels[]" multiple>
+    			    <select id="vacationHotels" class="form-control multiselect" name="hotels[]" multiple>
+				<?php if (count($hotels) > 0) : ?>
 				    <?php foreach ($hotels as $hotel): ?>
-					<option value="<?php echo $hotel['id']; ?>" <?php echo ($selectedHotels && in_array($hotel['id'], $selectedHotels)) ? 'selected="selected"' : '' ?>><?php echo $hotel['name'] ?></option>
+					<option value="<?php echo $hotel['id']; ?>" <?php echo ($selectedHotels && in_array($hotel['id'], $selectedHotels) && $hotel['country'] == $vacation['country']) ? 'selected="selected"' : '' ?>><?php echo $hotel['name'] ?></option>
 				    <?php endforeach; ?>
+				<?php else: ?>
+					<option value="">No hotels</option>
+				<?php endif; ?>
     			    </select>
     			</div>
-			<?php endif; ?>
 			<?php if (count($classifications) > 0) : ?>
     			<div class="form-group input-group">
     			    <span class="input-group-addon custom-label">Classifications</span>

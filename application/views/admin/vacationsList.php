@@ -1,7 +1,9 @@
 <?php require_once(ROOT . DS . 'application' . DS . 'views' . DS . 'admin' . DS . 'topMenu.php' ); ?>
 <div class="row">
-    <button class="btn btn-primary export">Export</button>
-    <div class="alert-group hide">
+    <div class="alert-group">
+	<button class="btn btn-primary export">Export</button>
+    </div>
+    <div class="alert-group export-alert hide">
 	<div class="alert alert-success">
 	    <a href="/download.php" class="btn btn-xs btn-success export-link pull-right">Download XML file</a>
 	    <strong>Succes:</strong> Your selection was exported.
@@ -9,7 +11,7 @@
     </div>
 
 
-    <table class="table table-custom">
+    <table class="table table-custom" cellspacing="0" width="100%" data-table>
         <thead>
             <tr class="success">
                 <th>#</th>

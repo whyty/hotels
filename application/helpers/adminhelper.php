@@ -39,39 +39,28 @@ class AdminHelper {
     function addDataToModel($model,$data){
 	$describe = $model->getDescribe();
 	foreach($describe as $field){
-	    if(isset($data[$field]) && !empty($data[$field])) $model->{$field} = $data[$field];
+	    $model->{$field} = $data[$field];
 	}
     }
     
+    public function modelCountData($model){
+	$data = $model->search();
+	return $data ? count($data) : 0;
+    }
     public function saveData2AdiacentTable($parentIdValue, $parentIdName, $secondaryIdName, $model, $data) {
 	if (isset($data)) {
 	    $model->where(array($parentIdName => $parentIdValue));
-	    $temp = $model->search();
-	    $arr = array();
-	    foreach ($temp as $item) {
-		array_push($arr, $item[$secondaryIdName]);
-	    }
-	    $diff = array_diff($arr, $data);
-	    foreach ($data as $value) {
-		if ($temp) {
-		    if (!in_array($value, $diff) && !in_array($value, $arr)) {
-			$model->{$parentIdName} = $parentIdValue;
-			$model->{$secondaryIdName} = $value;
-			$model->save();
-		    }
-		} else {
-		    $model->{$parentIdName} = $parentIdValue;
-		    $model->{$secondaryIdName} = $value;
-		    $model->save();
+	    $modelData = $model->search();
+	    if(count($modelData)){
+		foreach($modelData as $item){
+		    $model->id = $item['id'];
+		    $model->delete();
 		}
 	    }
-	    if ($temp) {
-		foreach ($temp as $d) {
-		    if (in_array($d[$secondaryIdName], $diff)) {
-			$model->id = $d['id'];
-			$model->delete();
-		    }
-		}
+	    foreach($data as $value){
+		$model->{$parentIdName} = $parentIdValue;
+		$model->{$secondaryIdName} = $value;
+		$model->save();
 	    }
 	}
     }

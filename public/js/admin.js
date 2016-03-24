@@ -50,7 +50,18 @@ $(document).ready(function () {
         $(".add_data").removeClass("hide");
     });
     $(".multiselect").multiselect();
-    $("#vacationHotels").multiselect();
+    $(".multiselect").change(function(){
+       var children = $(this).children(), values = $(this).val();
+       if(!values) $(this).children().removeAttr('selected');
+       children.each(function(){
+           var val = $(this).attr('value');
+           if(values && values.indexOf(val) != -1){
+               $(this).attr('selected','selected');
+           }else{
+               $(this).removeAttr('selected');
+           }
+       });
+    });
     
     $('button.export').click(function(e){
         var ids = [];
@@ -90,7 +101,7 @@ $(document).ready(function () {
 });
 $(document).mouseup(function (e)
 {
-    var container = $(".alert-group");
+    var container = $(".export-alert");
 
     if (!container.is(e.target) 
         && container.has(e.target).length === 0)

@@ -341,10 +341,10 @@ class SQLQuery {
 
 	function save() {
 		$query = '';
-		if (isset($this->id)) {
+		if ($this->id) {
 			$updates = '';
 			foreach ($this->_describe as $field) {
-				if ($this->$field) {
+				if (isset($this->$field)) {
 					$updates .= '`'.$field.'` = \''.mysql_real_escape_string($this->$field).'\',';
 				}
 			}
@@ -356,7 +356,7 @@ class SQLQuery {
 			$fields = '';
 			$values = '';
 			foreach ($this->_describe as $field) {
-				if ($this->$field) {
+				if (isset($this->$field)) {
 					$fields .= '`'.$field.'`,';
 					$values .= '\''.mysql_real_escape_string($this->$field).'\',';
 				}

@@ -55,7 +55,7 @@
                         <?php echo $interval['from_date'] . " -> " . $interval['to_date'] ?>
                     </div>
                     <div class="pull-right action-buttons">
-                        <a href="#" class="item"><span class="glyphicon glyphicon-pencil" onclick="Travel.intervalEdit(event, '#intervalForm')" data-edit='<?php echo json_encode($interval)?>'></span></a>
+                        <a href="#" class="item"><span class="glyphicon glyphicon-pencil" onclick="Travel.dataEdit(event, '#intervalForm')" data-edit='<?php echo json_encode($interval)?>'></span></a>
                         <a href="/admin/deleteInterval/<?php echo $interval['id'] ?>" class="trash item" onclick="Travel.confirmDelete(event)"><span class="glyphicon glyphicon-trash"></span></a>
                     </div>
                 </li>

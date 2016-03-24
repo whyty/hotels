@@ -41,7 +41,13 @@ class AdminController extends VanillaController {
 
     function index($id = null) {
 	$this->isLoggedIn();
+	$hotels= $this->_helper->modelCountData($this->_hotel);
+	$airports = $this->_helper->modelCountData($this->_airport);
+	$vacations = $this->_helper->modelCountData($this->_vacation);
 	$this->set('username', $this->_username);
+	$this->set('hotels', $hotels);
+	$this->set('airports', $airports);
+	$this->set('vacations', $vacations);
 	$this->set('sectionName', 'Home');
     }
 
@@ -141,14 +147,8 @@ class AdminController extends VanillaController {
 
     function deleteHotel($id) {
 	$this->isLoggedIn();
-	$this->_interval->where(array('hotel_id' => $id));
-	$data = $this->_interval->search();
-	if (count($data) > 0) {
-	    foreach ($data as $d) {
-		$this->_interval->id = $d['id'];
-		$this->_interval->delete();
-	    }
-	}
+	$this->_helper->deletaDataFromAdiacentTable($id, 'hotel_id', $this->_interval);
+	$this->_helper->deletaDataFromAdiacentTable($id, 'hotel_id', $this->_vacation_hotel);
 	$this->_hotel->id = $id;
 	$this->_hotel->delete();
 	redirect('/admin/hotelsList');
@@ -323,7 +323,6 @@ class AdminController extends VanillaController {
 	$countries = $this->_country->search();
 	$airports = $this->_airport->search();
 	$themes = $this->_theme->search();
-	$hotels = $this->_hotel->search();
 	$classifications = $this->_classification->search();
 	$errors = isset($_SESSION['errors']) ? $_SESSION['errors'] : false;
 
@@ -332,7 +331,9 @@ class AdminController extends VanillaController {
 	    $this->_vacation->where(array('id' => $id));
 	    $data = $this->_vacation->search();
 	    $vacation = $data[0];
-	    $sectionName = 'Vacation &raquo; ' . $data[0]['title'];
+	    $this->_hotel->where(array('country' => $vacation['country']));
+	    $hotels = $this->_hotel->search();
+	    $sectionName = 'Vacation &raquo; ' . $vacation['title'];
 	    $this->_vacation_airport->where(array('vacation_id' => $id));
 	    $this->_vacation_theme->where(array('vacation_id' => $id));
 	    $this->_vacation_hotel->where(array('vacation_id' => $id));
@@ -343,6 +344,7 @@ class AdminController extends VanillaController {
 	    $selectedHotels = $this->getIds($this->_vacation_hotel->search(), 'hotel_id');
 	    $selectedClassifications = $this->getIds($this->_vacation_classification->search(), 'classification_id');
 	} else {
+	    $hotels = $this->_hotel->search();
 	    $sectionName = 'Vacation add';
 	    $vacation = $selectedAirports = $selectedThemes = $selectedHotels = $selectedClassifications = false;
 	}
@@ -375,13 +377,13 @@ class AdminController extends VanillaController {
 	$this->_helper->saveData($this->_vacation, $_POST);
 	$this->_vacation->orderby('id', 'DESC');
 	$vacationData = $this->_vacation->search();
-	$vacationId = (count($vacationData) > 0) ? (int) $vacationData[0]['id'] : $_POST['id'];
-	$this->_helper->saveData2AdiacentTable($vacationId, 'vacation_id', 'theme_id', $this->_vacation_theme, $_POST['themes']);
-	$this->_helper->saveData2AdiacentTable($vacationId, 'vacation_id', 'hotel_id', $this->_vacation_hotel, $_POST['hotels']);
-	$this->_helper->saveData2AdiacentTable($vacationId, 'vacation_id', 'airport_id', $this->_vacation_airport, $_POST['airports']);
-	$this->_helper->saveData2AdiacentTable($vacationId, 'vacation_id', 'classification_id', $this->_vacation_classification, $_POST['classifications']);
-
-
+	$vacationId = isset($_POST['id']) ? $_POST['id'] : (int) $vacationData[0]['id'] ;
+	if($vacationId){
+	    $this->_helper->saveData2AdiacentTable($vacationId, 'vacation_id', 'theme_id', $this->_vacation_theme, $_POST['themes']);
+	    $this->_helper->saveData2AdiacentTable($vacationId, 'vacation_id', 'hotel_id', $this->_vacation_hotel, $_POST['hotels']);
+	    $this->_helper->saveData2AdiacentTable($vacationId, 'vacation_id', 'airport_id', $this->_vacation_airport, $_POST['airports']);
+	    $this->_helper->saveData2AdiacentTable($vacationId, 'vacation_id', 'classification_id', $this->_vacation_classification, $_POST['classifications']);
+	}
 	redirect("/admin/vacationsList");
     }
 
