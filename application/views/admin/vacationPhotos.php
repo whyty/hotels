@@ -28,7 +28,7 @@
             <?php if ($photo['vacation_id'] == $vacation_id && $photo['file'] != ' ') : ?>
                 <div class="col-md-3">
                     <div class="thumb-wrapper">
-                        <img src="<?php echo strpos($photo['file'], 'http://') !== false ? $photo['file'] : '/uploads/th-400X300-'. $photo['file']?>" class="thumbnail img-responsive" />
+                        <img src="<?php echo strpos($photo['file'], 'http://') !== false ? $photo['file'] : '/' . $imagesPath . 'th-155X115-'. $photo['file']?>" class="thumbnail img-responsive" />
                         <a href="/admin/deletePhoto/<?php echo $photo['id']?>" class="custom-delete"><i class="fa fa-trash-o"></i></a>
                     </div>
                 </div>

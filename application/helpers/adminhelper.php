@@ -88,9 +88,6 @@ class AdminHelper {
 	    //thumbnail creation
 	    if ($thumb == TRUE) {
 		foreach($thumbDimensions as $dimensions){
-		$thumbnail = $thumb_path . 'th-' . $dimensions['width'] . 'X' . $dimensions['height'] .'-' . $fileName;
-		    list($width, $height) = getimagesize($upload_image);
-		    $thumb_create = imagecreatetruecolor($dimensions['width'], $dimensions['height']);
 		    switch ($file_ext) {
 			case 'jpg':
 			    $source = imagecreatefromjpeg($upload_image);
@@ -108,21 +105,38 @@ class AdminHelper {
 			default:
 			    $source = imagecreatefromjpeg($upload_image);
 		    }
-
-		    imagecopyresized($thumb_create, $source, 0, 0, 0, 0, $dimensions['width'], $dimensions['height'], $width, $height);
+		    
+		    $imageX = imagesx($source);
+		    $imageY = imagesy($source);
+		    
+		    if($imageX > $imageY){
+			$thumbWidth = $dimensions['width'];
+			$thumbHeight = $imageY*($dimensions['height']/$imageX);
+		    }
+		    if($imageX < $imageY){
+			$thumbWidth = $imageX*($dimensions['width']/$imageY);
+			$thumbHeight = $dimensions['height'];
+		    }
+		    if($imageX == $imageY){
+			$thumbWidth = $dimensions['width'];
+			$thumbHeight = $dimensions['height'];
+		    }
+		    $thumb_create = ImageCreateTrueColor($thumbWidth,$thumbHeight);
+		    imagecopyresampled($thumb_create,$source,0,0,0,0,$thumbWidth,$thumbHeight,$imageX,$imageY);
+		    $thumbnail = $thumb_path . 'th-' . $dimensions['width'] . 'X' . $dimensions['height'] .'-' . $fileName;
 		    switch ($file_ext) {
 			case 'jpg' || 'jpeg':
-			    imagejpeg($thumb_create, $thumbnail, 100);
+			    imagejpeg($thumb_create, $thumbnail, 80);
 			    break;
 			case 'png':
-			    imagepng($thumb_create, $thumbnail, 100);
+			    imagepng($thumb_create, $thumbnail, 8);
 			    break;
 
 			case 'gif':
-			    imagegif($thumb_create, $thumbnail, 100);
+			    imagegif($thumb_create, $thumbnail, 80);
 			    break;
 			default:
-			    imagejpeg($thumb_create, $thumbnail, 100);
+			    imagejpeg($thumb_create, $thumbnail, 80);
 		    }
 		}
 	    }
@@ -239,7 +253,7 @@ class AdminHelper {
 			    $photosXml = $domtree->createElement('poze');
 			    $photosXml = $vacationXml->appendChild($photosXml);
 			    foreach ($photos as $photo) {
-				$photosXml->appendChild($domtree->createElement('poza', BASE_PATH . "/uploads/" . $photo['file']));
+				$photosXml->appendChild($domtree->createElement('poza', BASE_PATH . "/img/uploads/" . $photo['file']));
 			    }
 			}
 			//hotels
@@ -339,6 +353,80 @@ class AdminHelper {
 	}
     }
 
+    public function pagination($data){
+	$response = array();
+	if(isset($data) && $data['model']){
+	    $model = $this->{$data['model']};
+	    $model->setPage($data['page']);
+	    $model->setLimit((int)$data['perPage']);
+	    $dataTable = $model->search();
+	    $numPage = ceil($this->modelCountData($model) / $data['perPage']);
+	    $collection = '';
+	    
+	    foreach($dataTable as $d){
+		$collection.= '<tr>';
+		switch($data['model']){
+		    case "_hotel":
+			$collection.= '<td>'.$d['name'].'</td>';
+			if($d['stars'] > 0){
+			    $collection .= '<td>';
+			    for ($i = 0; $i < $d['stars']; $i++){
+				$collection.='<i class="fa fa-star star-colored"></i>';
+			    }
+			    $collection.='</td>';
+			}
+			$collection.='<td>'.$d['meal'].'</td>';
+			$collection.='<td>'
+				.'<a href="/admin/addHotel/'.$d['id'].'" class="action" title="Edit hotel"><i class="fa fa-pencil"></i></a>'
+				.'<a href="/admin/hotelIntervals/'.$d['id'].'" class="action" title="Hotel intervals"><i class="fa fa-clock-o"></i></a>'
+				.'<a href="/admin/hotelFacilities/'.$d['id'].'" class="action" title="Hotel facilities"><i class="fa fa-archive"></i></a>'
+				.'<a href="/admin/deleteHotel/'.$d['id'].'" onclick="Travel.confirmDelete(event)" class="action" title="Delete hotel"><i class="fa fa-trash-o"></i></a>'
+				.'</td>';
+			break;
+		    case '_airport':
+			$collection.= '<td>'.$d['name'].'</td>';
+			$collection.='<td>'.$d['country'].'</td>';
+			$collection.='<td>'
+				.'<a href="/admin/addAirport/'.$d['id'].'" class="action" title="Edit airport"><i class="fa fa-pencil"></i></a>'
+				.'<a href="/admin/deleteAirport/'.$d['id'].'" onclick="Travel.confirmDelete(event)" class="action" title="Delete airport"><i class="fa fa-trash-o"></i></a>'
+				.'</td>';
+			break;
+		    case '_classification':
+			$collection.='<td>'.$d['name'].'</td>';
+			$collection.='<td>'
+				.'<a href="/admin/addClassification/'.$d['id'].'" class="action" title="Edit classification"><i class="fa fa-pencil"></i></a>'
+				.'<a href="/admin/deleteClassification/'.$d['id'].'" onclick="Travel.confirmDelete(event)" class="action" title="Delete classification"><i class="fa fa-trash-o"></i></a>'
+				.'</td>';
+			break;
+		    case '_theme':
+			$collection.='<td>'.$d['name'].'</td>';
+			$collection.='<td>'
+				.'<a href="/admin/addTheme/'.$d['id'].'" class="action" title="Edit theme"><i class="fa fa-pencil"></i></a>'
+				.'<a href="/admin/deleteTheme/'.$d['id'].'" onclick="Travel.confirmDelete(event)" class="action" title="Delete theme"><i class="fa fa-trash-o"></i></a>'
+				.'</td>';
+			break;
+		    case '_vacation':
+			$collection.='<td><input type="checkbox" name="vacationSelected[]" value="'.$d['id'].'"></td>';
+			$collection.='<td>'.$d['title'].'</td>';
+			$collection.='<td>'.$d['country'].'</td>';
+			$collection.='<td>'.$d['city'].'</td>';
+			$collection.='<td>'.$d['currency'].'</td>';
+			$collection.='<td>'
+				.'<a href="/admin/addVacation/'.$d['id'].'" class="action" title="Edit vacation"><i class="fa fa-pencil"></i></a>'
+				.'<a href="/admin/vacationPhotos/'.$d['id'].'" class="action" title="Vacation photos"><i class="fa fa-picture-o"></i></a>'
+				.'<a href="/admin/deleteVacation/'.$d['id'].'" onclick="Travel.confirmDelete(event)" class="action" title="Delete vacation"><i class="fa fa-trash-o"></i></a>'
+				.'</td>';
+			
+			break;
+		}
+		$collection.='</tr>';
+	    }
+	    $response = array('numPage' => $numPage, 'itemsList' => $collection, 'model' => $data['model']);
+	}
+	
+	return $response;
+    }
+    
     function addHotelFromXML($array, $parentId) {
 	$exportMapping = Mapping::$vacation_tags;
 	$importMapping = Mapping::reverseMapping();

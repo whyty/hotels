@@ -98,7 +98,46 @@ $(document).ready(function () {
             }
         });
     });
+    $(".pagination a").trigger('click');
+    
 });
+    $('.pagination').on('click', 'a', function(e) {
+	var page = this.id;
+	var pagination = '';
+	
+	$('.collection').html('<i class="fa fa-spinner fa-pulse"></i>');
+	var data = {page: page, perPage: 10, model: $(this).attr('data-model')};
+	
+	$.ajax({
+		type: 'POST',
+		url: '/admin/paginate',
+		data: data,
+		dataType: 'json',
+		success: function(data) {
+			$('.collection').html(data.itemsList);
+			
+			if (page == 1) pagination += '<li class="disabled"><span>First</span></li><li class="disabled"><span>Previous</span></li>';
+			else pagination += '<li><a href="javascript:void(0)" id="1" data-model="'+data.model+'">First</a></li><li><a href="javascript:void(0)" id="' + (page - 1) + '" data-model="'+data.model+'">Previous</span></a></li>';
+ 
+			for (var i=parseInt(page)-3; i<=parseInt(page)+3; i++) {
+				if (i >= 1 && i <= data.numPage) {
+					pagination += '<li';
+					if (i == page) pagination += ' class="active"><span>' + i + '</span>';
+					else pagination += '><a href="javascript:void(0)" id="' + i + '" data-model="'+data.model+'">' + i + '</a>';
+					pagination += '<li>';
+				}
+			}
+ 
+			if (page == data.numPage) pagination += '<li class="disabled"><span>Next</span></li><li class="disabled"><span>Last</span></li>';
+			else pagination += '<li><a href="javascript:void(0)" id="' + (parseInt(page) + 1) + '" data-model="'+data.model+'">Next</a></li><li><a href="javascript:void(0)" id="' + data.numPage + '" data-model="'+data.model+'">Last</span></a></li>';
+			
+			$('.pagination').html(pagination);
+		},
+		error: function() {
+		}
+	});
+	return false;
+    });
 $(document).mouseup(function (e)
 {
     var container = $(".export-alert");

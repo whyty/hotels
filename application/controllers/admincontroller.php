@@ -16,6 +16,22 @@ class AdminController extends VanillaController {
     protected $_vacation_airport;
     protected $_photo;
     protected $_hotel_facility;
+    private $_thumbsDimensions = array(
+	array(
+	    'width' => 730,
+	    'height' => 410,
+	),
+	array(
+	    'width' => 155,
+	    'height' => 115,
+	),
+	array(
+	    'width' => 100,
+	    'height' => 60,
+	),
+    );
+    
+    private $_imagesPath = 'img/uploads/';
 
     function beforeAction() {
 	session_start();
@@ -141,8 +157,7 @@ class AdminController extends VanillaController {
 	$this->set('username', $this->_username);
 	$this->set('sectionName', 'Hotels List');
 	$this->set('parentActive', 'hotels');
-	$hotelList = $this->_hotel->search();
-	$this->set('hotels', $hotelList);
+	$this->set('model', '_hotel');
     }
 
     function deleteHotel($id) {
@@ -191,6 +206,7 @@ class AdminController extends VanillaController {
 
     function addAirport($id = null) {
 	$this->isLoggedIn();
+	$countries = $this->_country->search();
 	if ($id) {
 	    $this->_airport->where(array('id' => $id));
 	    $data = $this->_airport->search();
@@ -204,11 +220,12 @@ class AdminController extends VanillaController {
 	$this->set('parentActive', 'airports');
 	$this->set('sectionName', $sectionName);
 	$this->set('airport', $airport);
+	$this->set('countries', $countries);
     }
 
     function insertAirport() {
 	$this->isLoggedIn();
-	$this->helper->saveData($this->_airport,$_POST);
+	$this->_helper->saveData($this->_airport,$_POST);
 	redirect("/admin/airportsList");
     }
 
@@ -219,6 +236,7 @@ class AdminController extends VanillaController {
 	$this->set('parentActive', 'airports');
 	$airportsList = $this->_airport->search();
 	$this->set('airports', $airportsList);
+	$this->set('model', '_airport');
     }
 
     function deleteAirport($id) {
@@ -262,6 +280,7 @@ class AdminController extends VanillaController {
 	$this->set('parentActive', 'classifications');
 	$classificationsList = $this->_classification->search();
 	$this->set('classifications', $classificationsList);
+	$this->set('model', '_classification');
     }
 
     function deleteClassification($id) {
@@ -305,6 +324,7 @@ class AdminController extends VanillaController {
 	$this->set('parentActive', 'themes');
 	$themesList = $this->_theme->search();
 	$this->set('themes', $themesList);
+	$this->set('model', '_theme');
     }
 
     public function deleteTheme($id) {
@@ -395,6 +415,7 @@ class AdminController extends VanillaController {
 	$this->set("exported", 0);
 	$vacationsList = $this->_vacation->search();
 	$this->set('vacations', $vacationsList);
+	$this->set('model', '_vacation');
     }
     public function exportData(){
 	$this->_helper->exportData($_POST['data']);
@@ -420,8 +441,10 @@ class AdminController extends VanillaController {
 	$photos = $this->_photo->search();
 	if($photos){
 	    foreach($photos as $photo){
-		unlink('uploads/' . $photo['file']);
-		unlink('uploads/th-400X300-' . $photo['file']);
+		unlink($this->_imagesPath . $photo['file']);
+		foreach($this->_thumbsDimensions as $dimension){
+		    unlink($this->_imagesPath . 'th-' . $dimension['width'] . 'X' . $dimension['height']. '-' . $photo['file']);
+		}
 		$this->_photo->id = $photo['id'];
 		$this->_photo->delete();
 	    }
@@ -437,17 +460,22 @@ class AdminController extends VanillaController {
 	$this->set('vacation_id', $id);
 	$this->set('sectionName', 'Vacations photos');
 	$this->set('parentActive', 'vacations');
+	$this->set('imagesPath', $this->_imagesPath);
     }
 
     function savePhoto() {
-	if (!is_dir("uploads/"))
-	    mkdir("uploads/", 0777);
+	$pathArray = explode('/', $this->_imagesPath, -1);
+	$imgPath = '';
+	foreach($pathArray as $path){
+	    $imgPath .= $path . '/';
+	    if(!is_dir($imgPath) ) mkdir($imgPath, 0775);
+	}
 	$vacation_id = $_POST['vacation_id'];
 	$image = explode(".", $_FILES['photo']['name']);
 	$filename = rand(1, 999) . '-' . $image[0];
 	if (isset($_POST["submit"])) {
 	    if (!empty($_FILES['photo']['name'])) {
-		$upload_img = $this->_helper->cwUpload('photo', 'uploads/', 'uploads/', $filename, TRUE, array(array('width'=>'400', 'height'=>'300')));
+		$upload_img = $this->_helper->cwUpload('photo', $this->_imagesPath, $this->_imagesPath, $filename, TRUE, $this->_thumbsDimensions);
 		if ($upload_img) {
 		    $this->_photo->vacation_id = $vacation_id;
 		    $this->_photo->thumb = $upload_img;
@@ -465,8 +493,10 @@ class AdminController extends VanillaController {
 	$data = $this->_photo->search();
 
 	if ($data) {
-	    unlink('uploads/' . $data[0]['file']);
-	    unlink('uploads/th-400X300-' . $data[0]['file']);
+	    unlink($this->_imagesPath . $data[0]['file']);
+	    foreach($this->_thumbsDimensions as $dimension){
+		unlink($this->_imagesPath . 'th-' . $dimension['width'] . 'X' . $dimension['height']. '-' . $data[0]['file']);
+	    }
 	    $this->_photo->id = $data[0]['id'];
 	    $this->_photo->delete();
 	    redirect('/admin/vacationPhotos/' . $data[0]['vacation_id']);
@@ -537,7 +567,16 @@ class AdminController extends VanillaController {
 	header('Content-Type: application/json');
 	echo $response;
     }
-
+    
+    public function paginate($data = ''){
+	$collection = array();
+	$data  = $_POST ? $_POST : '';
+	if($data) $collection = $this->_helper->pagination($data);
+	$collection = json_encode($collection);
+	header('Content-Type: application/json');
+	echo $collection;
+    }
+    
     function afterAction() {
 	
     }
